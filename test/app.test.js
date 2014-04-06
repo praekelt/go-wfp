@@ -23,33 +23,44 @@ describe("app", function() {
         });
 
         describe("when the user starts a session", function() {
-            it("should ask them want they want to do", function() {
+            it("should show them the start menu", function() {
                 return tester
                     .start()
                     .check.interaction({
                         state: 'states:start',
                         reply: [
-                            'Hi there! What do you want to do?',
-                            '1. Show this menu again',
-                            '2. Exit'
+                            'Welcome to the World Feed Program.',
+                            '1. Register',
+                            '2. Report',
+                            '3. Exit'
                         ].join('\n')
                     })
                     .run();
             });
         });
 
-        describe("when the user asks to see the menu again", function() {
-            it("should show the menu again", function() {
+        describe("when the user selects registration", function() {
+            it("should show the first registration question", function() {
                 return tester
                     .setup.user.state('states:start')
                     .input('1')
                     .check.interaction({
-                        state: 'states:start',
-                        reply: [
-                            'Hi there! What do you want to do?',
-                            '1. Show this menu again',
-                            '2. Exit'
-                        ].join('\n')
+                        state: 'states:register',
+                        reply: 'Registration not supported yet.',
+                    })
+                    .check.reply.ends_session()
+                    .run();
+            });
+        });
+
+        describe("when the user selects reporting", function() {
+            it("should show the first reporting question", function() {
+                return tester
+                    .setup.user.state('states:start')
+                    .input('2')
+                    .check.interaction({
+                        state: 'states:report:school_id',
+                        reply: 'School ID:',
                     })
                     .run();
             });
@@ -59,10 +70,10 @@ describe("app", function() {
             it("should say thank you and end the session", function() {
                 return tester
                     .setup.user.state('states:start')
-                    .input('2')
+                    .input('3')
                     .check.interaction({
                         state: 'states:end',
-                        reply: 'Thanks, cheers!'
+                        reply: 'Bye!'
                     })
                     .check.reply.ends_session()
                     .run();

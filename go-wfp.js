@@ -3,7 +3,7 @@ go;
 
 go.app = function() {
     var vumigo = require('vumigo_v02');
-    var _ = require("lodash");x
+    var _ = require("lodash");
     var App = vumigo.App;
     var Choice = vumigo.states.Choice;
     var ChoiceState = vumigo.states.ChoiceState;
@@ -73,45 +73,89 @@ go.app = function() {
         // Registration
 
         self.states.add('states:register', function(name) {
+            return new EndState(name, {
+                text: $('Registration not supported yet.'),
+                next: 'states:start',
+            });
         });
 
-        // Report
+        // Report utilities
 
-        self.states.add('states:report', function(name) {
-        });
+        self.report_states = [];
+
+        self.register_report_state = function(report_name) {
+            var name = 'states:report:' + report_name;
+            self.report_states.push(name);
+            return name;
+        };
+
+        self.next_report_state = function(name) {
+            var idx = _(self.report_states).indexOf(name);
+            return self.report_states[idx + 1];
+        };
 
         self.add_report_question = function(report_name, opts) {
+            var name = self.register_report_state(report_name);
             opts = _.defaults(opts || {}, {
                 state: IntegerState
             });
-            self.states.add('states:report:' + report_name, function(name) {
+            self.states.add(name, function(name) {
                 return new opts.state(name, {
                     question: opts.question,
                     check: opts.check,
-                    next: "XXX"
+                    next: self.next_report_state(name)
                 });
             });
         };
 
         self.add_report_goods_question = function(report_name, opts) {
             opts = _.defaults(opts || {
-                state: DecimalState,
+                state: FloatState,
                 check: self.check_int(0, 20000)
             });
             return self.add_report_question(report_name, opts);
-        });
+        };
 
         self.add_report_total = function(total_name, opts) {
-            self.states.add('states:report:' + total_name, function(name) {
-                return new FreeTextSate(name, {
-                    question: "XXX",
-                    next: "XXX"
+            var name = self.register_report_state(total_name);
+            opts = _.defaults(opts || {}, {
+                values: []
+            });
+            self.states.add(name, function(name) {
+                var total = _(opts.values)
+                    .map(function (value) {
+                        return self.im.user.answers['states:report:' + value];
+                    })
+                    .reduce(function (sum, n) { return sum + n; }, 0);
+                return new ChoiceState(name, {
+                    question: opts.question.context({total: total}),
+                    choices: [
+                        new Choice("continue", "Continue")
+                    ],
+                    next: self.next_report_state(name)
                 });
             });
         };
 
-        self.add_report_question('school_id', function(name) {
-            return "XXX";
+        self.add_report_end = function(report_name) {
+            var name = self.register_report_state(report_name);
+            self.states.add(name, function(name) {
+                return new EndState(name, {
+                    text: $("Thanks for the report!"),
+                    next: 'states:start',
+                });
+            });
+        };
+
+        // Report states
+
+        self.states.add('states:report', function(name) {
+            return self.states.create(self.report_states[0]);
+        });
+
+        self.add_report_question('school_id', {
+            state: FreeText,
+            question: $('School ID:')
         });
 
         self.add_report_question('days_in_session', {
@@ -135,6 +179,7 @@ go.app = function() {
         });
 
         self.add_report_total('enrollment_total', {
+            question: $('Total enrollment: {{ total }}'),
             values: ['enrollment_male', 'enrollment_female'],
         });
 
@@ -149,6 +194,7 @@ go.app = function() {
         });
 
         self.add_report_total('attendance_total', {
+            question: $('Total attendance: {{ total }}'),
             values: ['attendance_male', 'attendance_female'],
         });
 
@@ -163,6 +209,7 @@ go.app = function() {
         });
 
         self.add_report_total('beneficiaries_total', {
+            question: $('Total beneficiaries: {{ total }}'),
             values: ['beneficiaries_male', 'beneficiaries_female'],
         });
 
@@ -232,11 +279,13 @@ go.app = function() {
             question: $('Oil lost (kg):'),
         });
 
+        self.add_report_end('end');
+
         // End
 
         self.states.add('states:end', function(name) {
             return new EndState(name, {
-                text: $('Bye!')
+                text: $('Bye!'),
                 next: 'states:start'
             });
         });
