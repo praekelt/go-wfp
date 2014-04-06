@@ -208,6 +208,73 @@ describe("app", function() {
                 it("should reject FOO as an answer",
                    reject_report_answer("FOO"));
             });
+
+            describe("when answering enrollment_male", function() {
+                beforeEach(function() {
+                    report_name = "enrollment_male";
+                });
+
+                it("should display state correctly",
+                   display_state_correctly("Male enrollment:")
+                );
+
+                it("should accept 0 as an answer",
+                   accept_report_answer("0", 0));
+
+                it("should accept 10000 as an answer",
+                   accept_report_answer("10000", 10000));
+
+                it("should reject -1 as an answer",
+                   reject_report_answer("-1"));
+
+                it("should reject 10001 as an answer",
+                   reject_report_answer("10001"));
+
+                it("should reject 1.1 as an answer",
+                   reject_report_answer("1.1"));
+            });
+
+            describe("when answering enrollment_female", function() {
+                beforeEach(function() {
+                    report_name = "enrollment_female";
+                });
+
+                it("should display state correctly",
+                   display_state_correctly("Female enrollment:")
+                );
+
+                it("should accept 0 as an answer",
+                   accept_report_answer("0", 0));
+
+                it("should accept 10000 as an answer",
+                   accept_report_answer("10000", 10000));
+
+                it("should reject -1 as an answer",
+                   reject_report_answer("-1"));
+
+                it("should reject 10001 as an answer",
+                   reject_report_answer("10001"));
+
+                it("should reject 1.1 as an answer",
+                   reject_report_answer("1.1"));
+            });
+
+            describe("when displaying the total enrollment", function() {
+                beforeEach(function() {
+                    report_name = "enrollment_total";
+                    tester.setup.user.answers({
+                        'states:report:enrollment_male': 5,
+                        'states:report:enrollment_female': 8
+                    });
+                });
+
+                it("should display state correctly",
+                   display_state_correctly([
+                       "Total enrollment: 13",
+                       "1. Continue"
+                   ].join("\n"))
+                );
+            });
         });
     });
 });
