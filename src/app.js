@@ -7,6 +7,9 @@ go.app = function() {
     var MenuState = vumigo.states.MenuState;
     var FreeText = vumigo.states.FreeText;
     var EndState = vumigo.states.EndState;
+    var LazyTranslator = vumigo.translate.LazyTranslator;
+
+    var $ = new LazyTranslator();
 
     var FloatState = FreeText.extend(function(self, name, opts) {
         opts = _.defaults(opts || {});
@@ -16,7 +19,7 @@ go.app = function() {
         self.check = function(input) {
             var x = parseFloat(input);
             if (_.isNaN(x)) {
-                return false;
+                return App.$("Expected a number.");
             }
             return self.additional_check(x);
         };
@@ -30,7 +33,7 @@ go.app = function() {
         self.check = function(input) {
             var x = parseFloat(input);
             if (_.isNaN(x) || (x % 1 !== 0)) {
-                return false;
+                return $("Expected a whole number.");
             }
             return self.additional_check(x);
         };
@@ -39,19 +42,20 @@ go.app = function() {
     var GoApp = App.extend(function(self) {
         App.call(self, 'states:start');
 
-        var $ = self.$;
-
         // Utilities
 
         self.check_int = function(min, max) {
             return function(i) {
                 if (_.isString(min)) {
-                    min = self.im.user.answer('state:report:' + min);
+                    min = self.im.user.answers['states:report:' + min];
                 }
                 if (_.isString(max)) {
-                    max = self.im.user.answer('state:report:' + max);
+                    max = self.im.user.answers['states:report:' + max];
                 }
-                return ((i >= min) && (i <= max));
+                if ((i < min) || (i > max)) {
+                    return $("Number must be between {{ min }} and {{ max }}.")
+                        .context({min: min, max: max});
+                }
             };
         };
 
