@@ -116,7 +116,7 @@ go.app = function() {
         };
 
         self.add_report_goods_question = function(report_name, opts) {
-            opts = _.defaults(opts || {
+            opts = _.defaults(opts || {}, {
                 state: FloatState,
                 check: self.check_int(0, 20000)
             });

@@ -595,6 +595,231 @@ describe("app", function() {
                 it("should reject 1.1 as an answer",
                    reject_report_answer("1.1"));
             });
+
+            describe("when answering cereal:received", function() {
+                beforeEach(function() {
+                    report_name = "cereal:received";
+                });
+
+                it("should display state correctly",
+                   display_state_correctly("Cereal received (kg):")
+                );
+
+                it("should accept 0 as an answer",
+                   accept_report_answer("0", 0));
+
+                it("should accept 20000 as an answer",
+                   accept_report_answer("20000", 20000));
+
+                it("should reject -1 as an answer",
+                   reject_report_answer("-1"));
+
+                it("should reject 20001 as an answer",
+                   reject_report_answer("20001"));
+
+                it("should accept 1.1 as an answer",
+                   accept_report_answer("1.1", 1.1));
+            });
+
+            describe("when answering cereal:used", function() {
+                beforeEach(function() {
+                    report_name = "cereal:used";
+                });
+
+                it("should display state correctly",
+                   display_state_correctly("Cereal used (kg):")
+                );
+
+                it("should accept 0 as an answer",
+                   accept_report_answer("0", 0));
+
+                it("should accept 20000 as an answer",
+                   accept_report_answer("20000", 20000));
+
+                it("should reject -1 as an answer",
+                   reject_report_answer("-1"));
+
+                it("should reject 20001 as an answer",
+                   reject_report_answer("20001"));
+
+                it("should accept 1.1 as an answer",
+                   accept_report_answer("1.1", 1.1));
+            });
+
+            describe("when answering cereal:losses", function() {
+                beforeEach(function() {
+                    report_name = "cereal:losses";
+                });
+
+                it("should display state correctly",
+                   display_state_correctly("Cereal lost (kg):")
+                );
+
+                it("should accept 0 as an answer",
+                   accept_report_answer("0", 0));
+
+                it("should accept 20000 as an answer",
+                   accept_report_answer("20000", 20000));
+
+                it("should reject -1 as an answer",
+                   reject_report_answer("-1"));
+
+                it("should reject 20001 as an answer",
+                   reject_report_answer("20001"));
+
+                it("should accept 1.1 as an answer",
+                   accept_report_answer("1.1", 1.1));
+            });
+
+            describe("when answering pulses:received", function() {
+                beforeEach(function() {
+                    report_name = "pulses:received";
+                });
+
+                it("should display state correctly",
+                   display_state_correctly("Pulses received (kg):")
+                );
+
+                it("should accept 0 as an answer",
+                   accept_report_answer("0", 0));
+
+                it("should accept 20000 as an answer",
+                   accept_report_answer("20000", 20000));
+
+                it("should reject -1 as an answer",
+                   reject_report_answer("-1"));
+
+                it("should reject 20001 as an answer",
+                   reject_report_answer("20001"));
+
+                it("should accept 1.1 as an answer",
+                   accept_report_answer("1.1", 1.1));
+            });
+
+            describe("when answering pulses:used", function() {
+                beforeEach(function() {
+                    report_name = "pulses:used";
+                });
+
+                it("should display state correctly",
+                   display_state_correctly("Pulses used (kg):")
+                );
+
+                it("should accept 0 as an answer",
+                   accept_report_answer("0", 0));
+
+                it("should accept 20000 as an answer",
+                   accept_report_answer("20000", 20000));
+
+                it("should reject -1 as an answer",
+                   reject_report_answer("-1"));
+
+                it("should reject 20001 as an answer",
+                   reject_report_answer("20001"));
+
+                it("should accept 1.1 as an answer",
+                   accept_report_answer("1.1", 1.1));
+            });
+
+            describe("when answering pulses:losses", function() {
+                beforeEach(function() {
+                    report_name = "pulses:losses";
+                });
+
+                it("should display state correctly",
+                   display_state_correctly("Pulses lost (kg):")
+                );
+
+                it("should accept 0 as an answer",
+                   accept_report_answer("0", 0));
+
+                it("should accept 20000 as an answer",
+                   accept_report_answer("20000", 20000));
+
+                it("should reject -1 as an answer",
+                   reject_report_answer("-1"));
+
+                it("should reject 20001 as an answer",
+                   reject_report_answer("20001"));
+
+                it("should accept 1.1 as an answer",
+                   accept_report_answer("1.1", 1.1));
+            });
+
+            describe("when answering oil:received", function() {
+                beforeEach(function() {
+                    report_name = "oil:received";
+                });
+
+                it("should display state correctly",
+                   display_state_correctly("Oil received (kg):")
+                );
+
+                it("should accept 0 as an answer",
+                   accept_report_answer("0", 0));
+
+                it("should accept 20000 as an answer",
+                   accept_report_answer("20000", 20000));
+
+                it("should reject -1 as an answer",
+                   reject_report_answer("-1"));
+
+                it("should reject 20001 as an answer",
+                   reject_report_answer("20001"));
+
+                it("should accept 1.1 as an answer",
+                   accept_report_answer("1.1", 1.1));
+            });
+
+            describe("when answering oil:used", function() {
+                beforeEach(function() {
+                    report_name = "oil:used";
+                });
+
+                it("should display state correctly",
+                   display_state_correctly("Oil used (kg):")
+                );
+
+                it("should accept 0 as an answer",
+                   accept_report_answer("0", 0));
+
+                it("should accept 20000 as an answer",
+                   accept_report_answer("20000", 20000));
+
+                it("should reject -1 as an answer",
+                   reject_report_answer("-1"));
+
+                it("should reject 20001 as an answer",
+                   reject_report_answer("20001"));
+
+                it("should accept 1.1 as an answer",
+                   accept_report_answer("1.1", 1.1));
+            });
+
+            describe("when answering oil:losses", function() {
+                beforeEach(function() {
+                    report_name = "oil:losses";
+                });
+
+                it("should display state correctly",
+                   display_state_correctly("Oil lost (kg):")
+                );
+
+                it("should accept 0 as an answer",
+                   accept_report_answer("0", 0));
+
+                it("should accept 20000 as an answer",
+                   accept_report_answer("20000", 20000));
+
+                it("should reject -1 as an answer",
+                   reject_report_answer("-1"));
+
+                it("should reject 20001 as an answer",
+                   reject_report_answer("20001"));
+
+                it("should accept 1.1 as an answer",
+                   accept_report_answer("1.1", 1.1));
+            });
         });
     });
 });
