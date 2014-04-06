@@ -1,25 +1,27 @@
 {
-  "name": "go-jsbox-skeleton",
-  "version": "0.2.0",
-  "description": "Skeleton for a vumi javascript sandbox app",
+  "name": "go-wfp",
+  "version": "0.0.1",
+  "description": "World Feed Program monitoring system",
   "main": "lib/app.js",
   "scripts": {
     "test": "grunt test"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/praekelt/go-jsbox-skeleton.git"
+    "url": "git://github.com/praekelt/go-wfp.git"
   },
   "keywords": [
     "vumi",
-    "sandbox"
+    "sandbox",
+    "school",
+    "feeding"
   ],
   "author": "Praekelt Foundation",
   "license": "BSD",
   "bugs": {
-    "url": "https://github.com/praekelt/go-jsbox-skeleton/issues"
+    "url": "https://github.com/praekelt/go-wfp/issues"
   },
-  "homepage": "https://github.com/praekelt/go-jsbox-skeleton",
+  "homepage": "https://github.com/praekelt/go-wfp",
   "dependencies": {
     "vumigo_v02": "~0.2",
     "q": "~0.9",

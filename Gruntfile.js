@@ -20,7 +20,7 @@ module.exports = function (grunt) {
                 ]
             },
             dest: {
-                prd: 'go-app.js'
+                prd: 'go-wfp.js'
             },
             test: [
                 'test/setup.js',
