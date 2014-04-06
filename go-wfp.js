@@ -204,12 +204,12 @@ go.app = function() {
 
         self.add_report_question('beneficiaries_male', {
             question: $('Male beneficiaries (highest):'),
-            check: self.check_int(0, 'enrollment_male')
+            check: self.check_int(0, 'attendance_male')
         });
 
         self.add_report_question('beneficiaries_female', {
             question: $('Female beneficiaries (highest):'),
-            check: self.check_int(0, 'enrollment_female')
+            check: self.check_int(0, 'attendance_female')
         });
 
         self.add_report_total('beneficiaries_total', {

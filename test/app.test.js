@@ -275,6 +275,152 @@ describe("app", function() {
                    ].join("\n"))
                 );
             });
+
+            describe("when answering attendance_male", function() {
+                beforeEach(function() {
+                    report_name = "attendance_male";
+                    tester.setup.user.answers({
+                        'states:report:enrollment_male': 5,
+                    });
+                });
+
+                it("should display state correctly",
+                   display_state_correctly("Male attendance (highest):")
+                );
+
+                it("should accept 0 as an answer",
+                   accept_report_answer("0", 0));
+
+                it("should accept 5 as an answer",
+                   accept_report_answer("5", 5));
+
+                it("should reject -1 as an answer",
+                   reject_report_answer("-1"));
+
+                it("should reject 6 as an answer",
+                   reject_report_answer("6"));
+
+                it("should reject 1.1 as an answer",
+                   reject_report_answer("1.1"));
+            });
+
+            describe("when answering attendance_female", function() {
+                beforeEach(function() {
+                    report_name = "attendance_female";
+                    tester.setup.user.answers({
+                        'states:report:enrollment_female': 5,
+                    });
+                });
+
+                it("should display state correctly",
+                   display_state_correctly("Female attendance (highest):")
+                );
+
+                it("should accept 0 as an answer",
+                   accept_report_answer("0", 0));
+
+                it("should accept 5 as an answer",
+                   accept_report_answer("5", 5));
+
+                it("should reject -1 as an answer",
+                   reject_report_answer("-1"));
+
+                it("should reject 6 as an answer",
+                   reject_report_answer("6"));
+
+                it("should reject 1.1 as an answer",
+                   reject_report_answer("1.1"));
+            });
+
+            describe("when displaying the total attendance", function() {
+                beforeEach(function() {
+                    report_name = "attendance_total";
+                    tester.setup.user.answers({
+                        'states:report:attendance_male': 5,
+                        'states:report:attendance_female': 8
+                    });
+                });
+
+                it("should display state correctly",
+                   display_state_correctly([
+                       "Total attendance: 13",
+                       "1. Continue"
+                   ].join("\n"))
+                );
+            });
+
+            describe("when answering beneficiaries_male", function() {
+                beforeEach(function() {
+                    report_name = "beneficiaries_male";
+                    tester.setup.user.answers({
+                        'states:report:attendance_male': 5,
+                    });
+                });
+
+                it("should display state correctly",
+                   display_state_correctly("Male beneficiaries (highest):")
+                );
+
+                it("should accept 0 as an answer",
+                   accept_report_answer("0", 0));
+
+                it("should accept 5 as an answer",
+                   accept_report_answer("5", 5));
+
+                it("should reject -1 as an answer",
+                   reject_report_answer("-1"));
+
+                it("should reject 6 as an answer",
+                   reject_report_answer("6"));
+
+                it("should reject 1.1 as an answer",
+                   reject_report_answer("1.1"));
+            });
+
+            describe("when answering beneficiaries_female", function() {
+                beforeEach(function() {
+                    report_name = "beneficiaries_female";
+                    tester.setup.user.answers({
+                        'states:report:attendance_female': 5,
+                    });
+                });
+
+                it("should display state correctly",
+                   display_state_correctly("Female beneficiaries (highest):")
+                );
+
+                it("should accept 0 as an answer",
+                   accept_report_answer("0", 0));
+
+                it("should accept 5 as an answer",
+                   accept_report_answer("5", 5));
+
+                it("should reject -1 as an answer",
+                   reject_report_answer("-1"));
+
+                it("should reject 6 as an answer",
+                   reject_report_answer("6"));
+
+                it("should reject 1.1 as an answer",
+                   reject_report_answer("1.1"));
+            });
+
+            describe("when displaying the total beneficiaries", function() {
+                beforeEach(function() {
+                    report_name = "beneficiaries_total";
+                    tester.setup.user.answers({
+                        'states:report:beneficiaries_male': 5,
+                        'states:report:beneficiaries_female': 8
+                    });
+                });
+
+                it("should display state correctly",
+                   display_state_correctly([
+                       "Total beneficiaries: 13",
+                       "1. Continue"
+                   ].join("\n"))
+                );
+            });
         });
     });
 });
