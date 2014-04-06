@@ -820,6 +820,20 @@ describe("app", function() {
                 it("should accept 1.1 as an answer",
                    accept_report_answer("1.1", 1.1));
             });
+
+            describe("when completing the report", function() {
+                it("should display the report end state", function () {
+                    return tester
+                        .setup.user.state("states:report:oil:losses")
+                        .input("10")
+                        .check.interaction({
+                            state: "states:report:end",
+                            reply: "Thanks for the report!",
+                        })
+                        .check.reply.ends_session()
+                        .run();
+                });
+            });
         });
     });
 });
