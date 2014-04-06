@@ -52,8 +52,14 @@ go.app = function() {
                 if (_.isString(min)) {
                     min = self.im.user.answers['states:report:' + min];
                 }
+                else if (_.isFunction(min)) {
+                    min = min.call(self, self.im.user);
+                }
                 if (_.isString(max)) {
                     max = self.im.user.answers['states:report:' + max];
+                }
+                else if (_.isFunction(max)) {
+                    max = max.call(self, self.im.user);
                 }
                 if ((i < min) || (i > max)) {
                     return $("Number must be between {{ min }} and {{ max }}.")
@@ -217,34 +223,39 @@ go.app = function() {
             values: ['beneficiaries_male', 'beneficiaries_female'],
         });
 
+        self.days_without_feeding = function (user) {
+            return (user.answers['states:report:days_in_session'] -
+                    user.answers['states:report:days_of_feeding']);
+        };
+
         self.add_report_question('not_fed:lack_of_food', {
             question: $('Number of days pupils not fed for - Lack of food:'),
-            check: self.check_int(0, 'days_in_session - days_of_feeding')
+            check: self.check_int(0, self.days_without_feeding),
         });
 
         self.add_report_question('not_fed:lack_of_firewood', {
             question: $('Number of days pupils not fed for - Lack of firewood:'),
-            check: self.check_int(0, 'days_in_session - days_of_feeding')
+            check: self.check_int(0, self.days_without_feeding),
         });
 
         self.add_report_question('not_fed:lack_of_water', {
             question: $('Number of days pupils not fed for - Lack of water:'),
-            check: self.check_int(0, 'days_in_session - days_of_feeding')
+            check: self.check_int(0, self.days_without_feeding),
         });
 
         self.add_report_question('not_fed:cooks_absent', {
             question: $('Number of days pupils not fed for - Cooks absent:'),
-            check: self.check_int(0, 'days_in_session - days_of_feeding')
+            check: self.check_int(0, self.days_without_feeding),
         });
 
         self.add_report_question('not_fed:pupils_dislike_food', {
             question: $('Number of days pupils not fed for - Pupils dislike food:'),
-            check: self.check_int(0, 'days_in_session - days_of_feeding')
+            check: self.check_int(0, self.days_without_feeding),
         });
 
         self.add_report_question('not_fed:other', {
             question: $('Number of days pupils not fed for - Other:'),
-            check: self.check_int(0, 'days_in_session - days_of_feeding')
+            check: self.check_int(0, self.days_without_feeding),
         });
 
         self.add_report_goods_question('cereal:received', {

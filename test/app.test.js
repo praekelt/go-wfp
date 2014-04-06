@@ -421,6 +421,180 @@ describe("app", function() {
                    ].join("\n"))
                 );
             });
+
+            describe("when answering not_fed:lack_of_food", function() {
+                beforeEach(function() {
+                    report_name = "not_fed:lack_of_food";
+                    tester.setup.user.answers({
+                        'states:report:days_in_session': 7,
+                        'states:report:days_of_feeding': 3,
+                    });
+                });
+
+                it("should display state correctly",
+                   display_state_correctly("Number of days pupils not fed for - Lack of food:")
+                );
+
+                it("should accept 0 as an answer",
+                   accept_report_answer("0", 0));
+
+                it("should accept 4 as an answer",
+                   accept_report_answer("4", 4));
+
+                it("should reject -1 as an answer",
+                   reject_report_answer("-1"));
+
+                it("should reject 5 as an answer",
+                   reject_report_answer("5"));
+
+                it("should reject 1.1 as an answer",
+                   reject_report_answer("1.1"));
+            });
+
+            describe("when answering not_fed:lack_of_firewood", function() {
+                beforeEach(function() {
+                    report_name = "not_fed:lack_of_firewood";
+                    tester.setup.user.answers({
+                        'states:report:days_in_session': 7,
+                        'states:report:days_of_feeding': 3,
+                    });
+                });
+
+                it("should display state correctly",
+                   display_state_correctly("Number of days pupils not fed for - Lack of firewood:")
+                );
+
+                it("should accept 0 as an answer",
+                   accept_report_answer("0", 0));
+
+                it("should accept 4 as an answer",
+                   accept_report_answer("4", 4));
+
+                it("should reject -1 as an answer",
+                   reject_report_answer("-1"));
+
+                it("should reject 5 as an answer",
+                   reject_report_answer("5"));
+
+                it("should reject 1.1 as an answer",
+                   reject_report_answer("1.1"));
+            });
+
+            describe("when answering not_fed:lack_of_water", function() {
+                beforeEach(function() {
+                    report_name = "not_fed:lack_of_water";
+                    tester.setup.user.answers({
+                        'states:report:days_in_session': 7,
+                        'states:report:days_of_feeding': 3,
+                    });
+                });
+
+                it("should display state correctly",
+                   display_state_correctly("Number of days pupils not fed for - Lack of water:")
+                );
+
+                it("should accept 0 as an answer",
+                   accept_report_answer("0", 0));
+
+                it("should accept 4 as an answer",
+                   accept_report_answer("4", 4));
+
+                it("should reject -1 as an answer",
+                   reject_report_answer("-1"));
+
+                it("should reject 5 as an answer",
+                   reject_report_answer("5"));
+
+                it("should reject 1.1 as an answer",
+                   reject_report_answer("1.1"));
+            });
+
+            describe("when answering not_fed:cooks_absent", function() {
+                beforeEach(function() {
+                    report_name = "not_fed:cooks_absent";
+                    tester.setup.user.answers({
+                        'states:report:days_in_session': 7,
+                        'states:report:days_of_feeding': 3,
+                    });
+                });
+
+                it("should display state correctly",
+                   display_state_correctly("Number of days pupils not fed for - Cooks absent:")
+                );
+
+                it("should accept 0 as an answer",
+                   accept_report_answer("0", 0));
+
+                it("should accept 4 as an answer",
+                   accept_report_answer("4", 4));
+
+                it("should reject -1 as an answer",
+                   reject_report_answer("-1"));
+
+                it("should reject 5 as an answer",
+                   reject_report_answer("5"));
+
+                it("should reject 1.1 as an answer",
+                   reject_report_answer("1.1"));
+            });
+
+            describe("when answering not_fed:pupils_dislike_food", function() {
+                beforeEach(function() {
+                    report_name = "not_fed:pupils_dislike_food";
+                    tester.setup.user.answers({
+                        'states:report:days_in_session': 7,
+                        'states:report:days_of_feeding': 3,
+                    });
+                });
+
+                it("should display state correctly",
+                   display_state_correctly("Number of days pupils not fed for - Pupils dislike food:")
+                );
+
+                it("should accept 0 as an answer",
+                   accept_report_answer("0", 0));
+
+                it("should accept 4 as an answer",
+                   accept_report_answer("4", 4));
+
+                it("should reject -1 as an answer",
+                   reject_report_answer("-1"));
+
+                it("should reject 5 as an answer",
+                   reject_report_answer("5"));
+
+                it("should reject 1.1 as an answer",
+                   reject_report_answer("1.1"));
+            });
+
+            describe("when answering not_fed:other", function() {
+                beforeEach(function() {
+                    report_name = "not_fed:other";
+                    tester.setup.user.answers({
+                        'states:report:days_in_session': 7,
+                        'states:report:days_of_feeding': 3,
+                    });
+                });
+
+                it("should display state correctly",
+                   display_state_correctly("Number of days pupils not fed for - Other:")
+                );
+
+                it("should accept 0 as an answer",
+                   accept_report_answer("0", 0));
+
+                it("should accept 4 as an answer",
+                   accept_report_answer("4", 4));
+
+                it("should reject -1 as an answer",
+                   reject_report_answer("-1"));
+
+                it("should reject 5 as an answer",
+                   reject_report_answer("5"));
+
+                it("should reject 1.1 as an answer",
+                   reject_report_answer("1.1"));
+            });
         });
     });
 });
