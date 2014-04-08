@@ -124,7 +124,7 @@ describe("app", function() {
                             assert.deepEqual(user.answers, expected_answers);
                         })
                         .check(function (api, im, app) {
-                            var next_state = app.next_report_state(state_name);
+                            var next_state = app.report_states.next(state_name);
                             assert.equal(im.user.state.name, next_state);
                         })
                         .run();

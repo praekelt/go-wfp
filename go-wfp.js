@@ -11,6 +11,7 @@ go.app = function() {
     var FreeText = vumigo.states.FreeText;
     var EndState = vumigo.states.EndState;
     var LazyTranslator = vumigo.translate.LazyTranslator;
+    var Extendable = vumigo.utils.Extendable;
 
     var $ = new LazyTranslator();
 
@@ -40,6 +41,30 @@ go.app = function() {
             }
             return self.additional_check(x);
         };
+    });
+
+    var SequentialStates = Extendable.extend(function (self, app, prefix) {
+        self.app = app;
+        self.prefix = prefix;
+        self.states = [];
+
+        self.add = function(suffix, creator) {
+            var name =  self.prefix + suffix;
+            self.states.push(name);
+            return self.app.states.add(name, creator);
+        };
+
+        self.first = function() {
+            return self.states[0];
+        };
+
+        self.next = function(name) {
+            var idx = _(self.states).indexOf(name);
+            idx = idx < self.states.length ? idx : 0;
+            return self.states[idx + 1];
+        };
+
+
     });
 
     var GoApp = App.extend(function(self) {
@@ -91,29 +116,17 @@ go.app = function() {
 
         // Report utilities
 
-        self.report_states = [];
-
-        self.register_report_state = function(report_name) {
-            var name = 'states:report:' + report_name;
-            self.report_states.push(name);
-            return name;
-        };
-
-        self.next_report_state = function(name) {
-            var idx = _(self.report_states).indexOf(name);
-            return self.report_states[idx + 1];
-        };
+        self.report_states = new SequentialStates(self, 'states:report:');
 
         self.add_report_question = function(report_name, opts) {
-            var name = self.register_report_state(report_name);
             opts = _.defaults(opts || {}, {
                 state: IntegerState
             });
-            self.states.add(name, function(name) {
+            self.report_states.add(report_name, function(name) {
                 return new opts.state(name, {
                     question: opts.question,
                     check: opts.check,
-                    next: self.next_report_state(name)
+                    next: self.report_states.next(name)
                 });
             });
         };
@@ -127,11 +140,10 @@ go.app = function() {
         };
 
         self.add_report_total = function(total_name, opts) {
-            var name = self.register_report_state(total_name);
             opts = _.defaults(opts || {}, {
                 values: []
             });
-            self.states.add(name, function(name) {
+            self.report_states.add(total_name, function(name) {
                 var total = _(opts.values)
                     .map(function (value) {
                         return self.im.user.answers['states:report:' + value];
@@ -142,14 +154,13 @@ go.app = function() {
                     choices: [
                         new Choice("continue", "Continue")
                     ],
-                    next: self.next_report_state(name)
+                    next: self.report_states.next(name)
                 });
             });
         };
 
         self.add_report_end = function(report_name) {
-            var name = self.register_report_state(report_name);
-            self.states.add(name, function(name) {
+            self.report_states.add(report_name, function(name) {
                 return new EndState(name, {
                     text: $("Thanks for the report!"),
                     next: 'states:start',
@@ -160,7 +171,7 @@ go.app = function() {
         // Report states
 
         self.states.add('states:report', function(name) {
-            return self.states.create(self.report_states[0]);
+            return self.states.create(self.report_states.first());
         });
 
         self.add_report_question('school_id', {
