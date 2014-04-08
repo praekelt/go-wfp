@@ -102,11 +102,62 @@ go.app = function() {
             });
         });
 
+        // Registration utilities
+
+        self.reg_states = new SequentialStates(self, 'states:register:');
+
+        self.add_reg_question = function(reg_name, opts) {
+            opts = _.defaults(opts || {}, {
+                state: IntegerState
+            });
+            self.reg_states.add(reg_name, function(name) {
+                return new opts.state(name, {
+                    question: opts.question,
+                    check: opts.check,
+                    next: self.reg_states.next(name)
+                });
+            });
+        };
+
+        self.add_reg_goods_question = function(reg_name, opts) {
+            opts = _.defaults(opts || {}, {
+                state: FloatState,
+                check: self.check_int(0, 20000)
+            });
+            return self.add_reg_question(reg_name, opts);
+        };
+
         // Registration
 
         self.states.add('states:register', function(name) {
+            return self.states.create(self.reg_states.first());
+        });
+
+        self.add_reg_question('school_id', {
+            state: FreeText,
+            question: $('School ID:')
+        });
+
+        self.add_reg_question('emis', {
+            state: FreeText,
+            question: $('EMIS:')
+        });
+
+        self.add_reg_goods_question('cereal:opening', {
+            question: $('Cereal opening (kg):'),
+        });
+
+        self.add_reg_goods_question('pulses:opening', {
+            question: $('Pulses opening (kg):'),
+        });
+
+        self.add_reg_goods_question('oil:opening', {
+            question: $('Oil opening (kg):'),
+        });
+
+        self.reg_states.add('end', function(name) {
             return new EndState(name, {
-                text: $('Registration not supported yet.'),
+                text: $("Thanks for registering!"),
                 next: 'states:start',
             });
         });
@@ -152,15 +203,6 @@ go.app = function() {
                         new Choice("continue", "Continue")
                     ],
                     next: self.report_states.next(name)
-                });
-            });
-        };
-
-        self.add_report_end = function(report_name) {
-            self.report_states.add(report_name, function(name) {
-                return new EndState(name, {
-                    text: $("Thanks for the report!"),
-                    next: 'states:start',
                 });
             });
         };
@@ -302,7 +344,12 @@ go.app = function() {
             question: $('Oil lost (kg):'),
         });
 
-        self.add_report_end('end');
+        self.report_states.add('end', function(name) {
+            return new EndState(name, {
+                text: $("Thanks for the report!"),
+                next: 'states:start',
+            });
+        });
 
         // End
 
