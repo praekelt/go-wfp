@@ -106,7 +106,7 @@ describe("app", function() {
                     name: 'test_app'
                 })
                 .setup(function(api) {
-                    fixtures().forEach(api.http.fixtures.add);
+                    fixtures.http().forEach(api.http.fixtures.add);
                 });
         });
 
@@ -287,6 +287,20 @@ describe("app", function() {
                             reply: "Thanks for registering!",
                         })
                         .check.reply.ends_session()
+                        .run();
+                });
+
+                it("should send the opening balances SMS", function () {
+                    return tester
+                        .setup.user.state("states:register:oil:opening")
+                        .setup.user.answers(fixtures.answers().registration)
+                        .input("10")
+                        .check(function(api, im, app) {
+                            assert.strictEqual(_.last(api.log.info), [
+                                "Dummy send to +27123456789: set SCHOOL123",
+                                " emisEMIS456 cer-o12.5 pul-o14 oil-o10"
+                            ].join(""));
+                        })
                         .run();
                 });
             });
