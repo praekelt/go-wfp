@@ -177,6 +177,119 @@ describe("app", function() {
                     .init.states(app.reg_states)
                     .init.tester(tester);
             });
+
+            describe("when answering school_id", function() {
+                beforeEach(function() {
+                    states_helper.init.state("school_id");
+                });
+
+                it("should display state correctly",
+                   states_helper.display_correctly("School ID:"));
+
+                it("should accept 12345 as an answer",
+                   states_helper.accept_answer("12345", "12345"));
+            });
+
+            describe("when answering emis", function() {
+                beforeEach(function() {
+                    states_helper.init.state("emis");
+                });
+
+                it("should display state correctly",
+                   states_helper.display_correctly("EMIS:"));
+
+                it("should accept 12345 as an answer",
+                   states_helper.accept_answer("12345", "12345"));
+            });
+
+            describe("when answering cereal:opening", function() {
+                beforeEach(function() {
+                    states_helper.init.state("cereal:opening");
+                });
+
+                it("should display state correctly",
+                   states_helper.display_correctly("Cereal opening (kg):")
+                );
+
+                it("should accept 0 as an answer",
+                   states_helper.accept_answer("0", 0));
+
+                it("should accept 20000 as an answer",
+                   states_helper.accept_answer("20000", 20000));
+
+                it("should reject -1 as an answer",
+                   states_helper.reject_answer("-1"));
+
+                it("should reject 20001 as an answer",
+                   states_helper.reject_answer("20001"));
+
+                it("should accept 1.1 as an answer",
+                   states_helper.accept_answer("1.1", 1.1));
+            });
+
+            describe("when answering pulses:opening", function() {
+                beforeEach(function() {
+                    states_helper.init.state("pulses:opening");
+                });
+
+                it("should display state correctly",
+                   states_helper.display_correctly("Pulses opening (kg):")
+                );
+
+                it("should accept 0 as an answer",
+                   states_helper.accept_answer("0", 0));
+
+                it("should accept 20000 as an answer",
+                   states_helper.accept_answer("20000", 20000));
+
+                it("should reject -1 as an answer",
+                   states_helper.reject_answer("-1"));
+
+                it("should reject 20001 as an answer",
+                   states_helper.reject_answer("20001"));
+
+                it("should accept 1.1 as an answer",
+                   states_helper.accept_answer("1.1", 1.1));
+            });
+
+            describe("when answering oil:opening", function() {
+                beforeEach(function() {
+                    states_helper.init.state("oil:opening");
+                });
+
+                it("should display state correctly",
+                   states_helper.display_correctly("Oil opening (kg):")
+                );
+
+                it("should accept 0 as an answer",
+                   states_helper.accept_answer("0", 0));
+
+                it("should accept 20000 as an answer",
+                   states_helper.accept_answer("20000", 20000));
+
+                it("should reject -1 as an answer",
+                   states_helper.reject_answer("-1"));
+
+                it("should reject 20001 as an answer",
+                   states_helper.reject_answer("20001"));
+
+                it("should accept 1.1 as an answer",
+                   states_helper.accept_answer("1.1", 1.1));
+            });
+
+            describe("when completing registration", function() {
+                it("should display the registration end state", function () {
+                    return tester
+                        .setup.user.state("states:register:oil:opening")
+                        .input("10")
+                        .check.interaction({
+                            state: "states:register:end",
+                            reply: "Thanks for registering!",
+                        })
+                        .check.reply.ends_session()
+                        .run();
+                });
+            });
         });
 
         describe("when the user is filing a report", function() {
