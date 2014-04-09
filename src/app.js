@@ -79,6 +79,14 @@ go.app = function() {
                     sender: sender,
                     message: message
                 }
+            }).then(function(result) {
+                return self.im.log([
+                    "CommCareApi call:",
+                    " code=", result.code,
+                    ", body=", result.body,
+                    ", sender=", sender,
+                    ", message='", message, "'"
+                ].join("")).thenResolve(result);
             });
         };
 

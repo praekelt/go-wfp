@@ -278,9 +278,14 @@ describe("app", function() {
             });
 
             describe("when completing registration", function() {
+                beforeEach(function() {
+                    tester
+                        .setup.user.state("states:register:oil:opening")
+                        .setup.user.answers(fixtures.answers().registration);
+                });
+
                 it("should display the registration end state", function () {
                     return tester
-                        .setup.user.state("states:register:oil:opening")
                         .input("10")
                         .check.interaction({
                             state: "states:register:end",
@@ -290,16 +295,32 @@ describe("app", function() {
                         .run();
                 });
 
-                it("should send the opening balances SMS", function () {
+                it("should log balances if using a dummy API", function () {
                     return tester
-                        .setup.user.state("states:register:oil:opening")
-                        .setup.user.answers(fixtures.answers().registration)
                         .input("10")
                         .check(function(api, im, app) {
                             assert.strictEqual(_.last(api.log.info), [
                                 "Dummy CommCareApi call: sender=+27123456789,",
                                 " message='set SCHOOL123 emisEMIS456",
                                 " cer-o12.5 pul-o14 oil-o10'",
+                            ].join(""));
+                        })
+                        .run();
+                });
+
+                it("should send the balances if using a real API", function () {
+                    return tester
+                        .setup.config.app({
+                            commcare_api: "http://example.com/commcare/api/",
+                        })
+                        .input("10")
+                        .check(function(api, im, app) {
+                            assert.strictEqual(_.last(api.log.info), [
+                                "CommCareApi call:",
+                                " code=200, body=\"OK\", sender=+27123456789,",
+                                " message='set SCHOOL123 emisEMIS456",
+                                " cer-o12.5 pul-o14 oil-o10",
+                                "'",
                             ].join(""));
                         })
                         .run();
@@ -988,9 +1009,14 @@ describe("app", function() {
             });
 
             describe("when completing the report", function() {
+                beforeEach(function() {
+                    tester
+                        .setup.user.state("states:report:oil:losses")
+                        .setup.user.answers(fixtures.answers().report);
+                });
+
                 it("should display the report end state", function () {
                     return tester
-                        .setup.user.state("states:report:oil:losses")
                         .input("10")
                         .check.interaction({
                             state: "states:report:end",
@@ -1000,10 +1026,8 @@ describe("app", function() {
                         .run();
                 });
 
-                it("should send the reports to CommCare", function () {
+                it("should log the reports if using a dummy API", function () {
                     return tester
-                        .setup.user.state("states:report:oil:losses")
-                        .setup.user.answers(fixtures.answers().report)
                         .input("302")
                         .check(function(api, im, app) {
                             smses = api.log.info.slice(-2);
@@ -1023,6 +1047,35 @@ describe("app", function() {
                                 "hgsf2 SCHOOL123",
                                 " cer-r100 cer-u101 cer-l102",
                                 " pul-r200 pul-u201 pul-l202",
+                                " oil-r300 oil-u301 oil-l302",
+                                "'",
+                            ].join(""));
+                        })
+                        .run();
+                });
+
+                it("should send the reports if using a real API", function () {
+                    return tester
+                        .setup.config.app({
+                            commcare_api: "http://example.com/commcare/api/",
+                        })
+                        .input("302")
+                        .check(function(api, im, app) {
+                            smses = api.log.info.slice(-2);
+                            assert.strictEqual(smses[0], [
+                                "CommCareApi call:",
+                                " code=200, body=\"OK\", sender=+27123456789,",
+                                " message='hgsf1 SCHOOL123 sch30 fed20",
+                                " enr-m100 enr-f150 att-m75 att-f85 ben-m70",
+                                " ben-f80 nofed-a1 nofed-b2 nofed-c3 nofed-d4",
+                                " nofed-e5 nofed-f6",
+                                "'",
+                            ].join(""));
+                            assert.strictEqual(smses[1], [
+                                "CommCareApi call:",
+                                " code=200, body=\"OK\", sender=+27123456789,",
+                                " message='hgsf2 SCHOOL123 cer-r100 cer-u101",
+                                " cer-l102 pul-r200 pul-u201 pul-l202",
                                 " oil-r300 oil-u301 oil-l302",
                                 "'",
                             ].join(""));
