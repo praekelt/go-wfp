@@ -150,7 +150,8 @@ go.app = function() {
 
         self.call_api = function(sender, message) {
             return self.im.log([
-                "Dummy send to ", sender, ": ", message].join(""));
+                "Dummy CommCareApi call: sender=", sender,
+                ", message='", message, "'"].join(""));
         };
     });
 

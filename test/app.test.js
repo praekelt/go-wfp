@@ -297,8 +297,9 @@ describe("app", function() {
                         .input("10")
                         .check(function(api, im, app) {
                             assert.strictEqual(_.last(api.log.info), [
-                                "Dummy send to +27123456789: set SCHOOL123",
-                                " emisEMIS456 cer-o12.5 pul-o14 oil-o10"
+                                "Dummy CommCareApi call: sender=+27123456789,"
+                                " message='set SCHOOL123 emisEMIS456"
+                                " cer-o12.5 pul-o14 oil-o10"
                             ].join(""));
                         })
                         .run();
