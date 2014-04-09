@@ -4,6 +4,7 @@ go;
 go.app = function() {
     var vumigo = require('vumigo_v02');
     var _ = require("lodash");
+    var Q = require("q");
     var App = vumigo.App;
     var Choice = vumigo.states.Choice;
     var ChoiceState = vumigo.states.ChoiceState;
@@ -11,6 +12,7 @@ go.app = function() {
     var FreeText = vumigo.states.FreeText;
     var EndState = vumigo.states.EndState;
     var LazyTranslator = vumigo.translate.LazyTranslator;
+    var HttpApi = vumigo.http.api.HttpApi;
     var Extendable = vumigo.utils.Extendable;
 
     var $ = new LazyTranslator();
@@ -64,11 +66,107 @@ go.app = function() {
             return self.states[idx + 1];
         };
 
+        self.answer = function(user, suffix) {
+            return user.answers[self.prefix + suffix];
+        };
+    });
 
+    var CommCareApi = HttpApi.extend(function(self, im, api_url) {
+        self.api_url = api_url;
+
+        HttpApi.call(self, im);
+
+        self.call_api = function(sender, message) {
+            return self.get(self.api_url, {
+                params: {
+                    sender: sender,
+                    message: message
+                }
+            });
+        };
+
+        self.make_template = function(answer_pairs) {
+            return _.template(
+                _.map(answer_pairs, function(pair) {
+                    return pair[0] + "<%= answer('" + pair[1] + "') %>";
+                }).join(" ")
+            );
+        };
+
+        self.set_opening_balances = function(user, seq_states) {
+            var template = self.make_template([
+                ["set ", "school_id"],
+                ["emis", "emis"],
+                ["cer-o", "cereal:opening"],
+                ["pul-o", "pulses:opening"],
+                ["oil-o", "oil:opening"]
+            ]);
+            var message = template({
+                answer: _.partial(seq_states.answer, user)
+            });
+            return self.call_api(user.addr, message);
+        };
+
+        self.send_monthly_sms_1 = function(user, seq_states) {
+            var template = self.make_template([
+                ["hgsf1 ", "school_id"],
+                ["sch", "days_in_session"], ["fed", "days_of_feeding"],
+                ["enr-m", "enrollment_male"], ["enr-f", "enrollment_female"],
+                ["att-m", "attendance_male"], ["att-f", "attedance_female"],
+                ["ben-m", "beneficiaries_male"],
+                ["ben-f", "beneficiaries_female"],
+                ["nofed-a", "not_fed:lack_of_food"],
+                ["nofed-b", "not_fed:lack_of_firewood"],
+                ["nofed-c", "not_fed:lack_of_water"],
+                ["nofed-d", "not_fed:cooks_absent"],
+                ["nofed-e", "not_fed:pupils_dislike_food"],
+                ["nofed-f", "not_fed:other"]
+            ]);
+            var message = template({
+                answer: _.partial(seq_states.answer, user)
+            });
+            return self.call_api(user.addr, message);
+        };
+
+        self.send_monthly_sms_2 = function(user, seq_states) {
+            var template = self.make_template([
+                ["hgsf2", "school_id"],
+                ["cer-r", "cereal:received"], ["cer-u", ":used"],
+                ["cer-l", ":losses"],
+                ["pul-r", "pulses:received"], ["pul-u", "pulses:used"],
+                ["pul-l", "pulses:losses"],
+                ["oil-r", "oil:received"], ["oil-u", "oil:used"],
+                ["oil-l", "oil:losses"]
+            ]);
+            var message = template({
+                answer: _.partial(seq_states.answer, user)
+            });
+            return self.call_api(user.addr, message);
+        };
+    });
+
+    var DummyCommCareApi = CommCareApi.extend(function(self, im) {
+        CommCareApi.call(self, im, null);
+
+        self.call_api = function(sender, message) {
+            return self.im.log([
+                "Dummy send to ", sender, ": ", message].join(""));
+        };
     });
 
     var GoApp = App.extend(function(self) {
         App.call(self, 'states:start');
+
+        self.init = function() {
+            if (!self.im.config.commcare_api) {
+                self.commcare = new DummyCommCareApi(self.im);
+            }
+            else {
+                self.commcare = new CommCareApi(
+                    self.im,
+                    self.im.config.commcare_api);
+            }
+        };
 
         // Utilities
 
@@ -162,6 +260,12 @@ go.app = function() {
             return new EndState(name, {
                 text: $("Thanks for registering!"),
                 next: 'states:start',
+                events: {
+                    'state:enter': function (state) {
+                        return self.commcare.set_opening_balances(
+                            self.im.user, self.reg_states);
+                    }
+                }
             });
         });
 
@@ -359,7 +463,18 @@ go.app = function() {
         self.states.add('states:end', function(name) {
             return new EndState(name, {
                 text: $('Bye!'),
-                next: 'states:start'
+                next: 'states:start',
+                events: {
+                    'state:enter': function (state) {
+                        console.log("foo");
+                        return Q.all([
+                            self.commcare.send_monthly_sms_1(
+                                self.im.user, self.report_states),
+                            self.commcare.send_monthly_sms_2(
+                                self.im.user, self.report_states)
+                        ]);
+                    }
+                }
             });
         });
     });
