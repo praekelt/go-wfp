@@ -267,7 +267,10 @@ go.app = function() {
                 text: $("Thanks for registering!"),
                 next: 'states:start',
                 events: {
-                    'state:enter': function (state) {
+                    // TODO: This should ideally be 'state:enter', but there
+                    // is a suspected bug in vumigo_v02 currently:
+                    // https://github.com/praekelt/vumi-jssandbox-toolkit/issues/177
+                    'state:show': function (state) {
                         return self.commcare.set_opening_balances(
                             self.im.user, self.reg_states);
                     }
@@ -462,7 +465,10 @@ go.app = function() {
                 text: $("Thanks for the report!"),
                 next: 'states:start',
                 events: {
-                    'state:enter': function (state) {
+                    // TODO: This should ideally be 'state:enter', but there
+                    // is a suspected bug in vumigo_v02 currently:
+                    // https://github.com/praekelt/vumi-jssandbox-toolkit/issues/177
+                    'state:show': function (state) {
                         return Q.all([
                             self.commcare.send_monthly_sms_1(
                                 self.im.user, self.report_states),
