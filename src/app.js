@@ -109,7 +109,7 @@ go.app = function() {
                 ["hgsf1 ", "school_id"],
                 ["sch", "days_in_session"], ["fed", "days_of_feeding"],
                 ["enr-m", "enrollment_male"], ["enr-f", "enrollment_female"],
-                ["att-m", "attendance_male"], ["att-f", "attedance_female"],
+                ["att-m", "attendance_male"], ["att-f", "attendance_female"],
                 ["ben-m", "beneficiaries_male"],
                 ["ben-f", "beneficiaries_female"],
                 ["nofed-a", "not_fed:lack_of_food"],
@@ -127,9 +127,9 @@ go.app = function() {
 
         self.send_monthly_sms_2 = function(user, seq_states) {
             var template = self.make_template([
-                ["hgsf2", "school_id"],
-                ["cer-r", "cereal:received"], ["cer-u", ":used"],
-                ["cer-l", ":losses"],
+                ["hgsf2 ", "school_id"],
+                ["cer-r", "cereal:received"], ["cer-u", "cereal:used"],
+                ["cer-l", "cereal:losses"],
                 ["pul-r", "pulses:received"], ["pul-u", "pulses:used"],
                 ["pul-l", "pulses:losses"],
                 ["oil-r", "oil:received"], ["oil-u", "oil:used"],
@@ -453,15 +453,6 @@ go.app = function() {
             return new EndState(name, {
                 text: $("Thanks for the report!"),
                 next: 'states:start',
-            });
-        });
-
-        // End
-
-        self.states.add('states:end', function(name) {
-            return new EndState(name, {
-                text: $('Bye!'),
-                next: 'states:start',
                 events: {
                     'state:enter': function (state) {
                         return Q.all([
@@ -472,6 +463,15 @@ go.app = function() {
                         ]);
                     }
                 }
+            });
+        });
+
+        // End
+
+        self.states.add('states:end', function(name) {
+            return new EndState(name, {
+                text: $('Bye!'),
+                next: 'states:start',
             });
         });
     });

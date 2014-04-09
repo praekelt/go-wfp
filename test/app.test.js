@@ -297,9 +297,9 @@ describe("app", function() {
                         .input("10")
                         .check(function(api, im, app) {
                             assert.strictEqual(_.last(api.log.info), [
-                                "Dummy CommCareApi call: sender=+27123456789,"
-                                " message='set SCHOOL123 emisEMIS456"
-                                " cer-o12.5 pul-o14 oil-o10"
+                                "Dummy CommCareApi call: sender=+27123456789,",
+                                " message='set SCHOOL123 emisEMIS456",
+                                " cer-o12.5 pul-o14 oil-o10'",
                             ].join(""));
                         })
                         .run();
@@ -997,6 +997,36 @@ describe("app", function() {
                             reply: "Thanks for the report!",
                         })
                         .check.reply.ends_session()
+                        .run();
+                });
+
+                it("should send the reports to CommCare", function () {
+                    return tester
+                        .setup.user.state("states:report:oil:losses")
+                        .setup.user.answers(fixtures.answers().report)
+                        .input("302")
+                        .check(function(api, im, app) {
+                            smses = api.log.info.slice(-2);
+                            assert.strictEqual(smses[0], [
+                                "Dummy CommCareApi call: sender=+27123456789,",
+                                " message='",
+                                "hgsf1 SCHOOL123 sch30 fed20",
+                                " enr-m100 enr-f150 att-m75 att-f85",
+                                " ben-m70 ben-f80",
+                                " nofed-a1 nofed-b2 nofed-c3",
+                                " nofed-d4 nofed-e5 nofed-f6",
+                                "'",
+                            ].join(""));
+                            assert.strictEqual(smses[1], [
+                                "Dummy CommCareApi call: sender=+27123456789,",
+                                " message='",
+                                "hgsf2 SCHOOL123",
+                                " cer-r100 cer-u101 cer-l102",
+                                " pul-r200 pul-u201 pul-l202",
+                                " oil-r300 oil-u301 oil-l302",
+                                "'",
+                            ].join(""));
+                        })
                         .run();
                 });
             });
