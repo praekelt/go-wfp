@@ -147,7 +147,8 @@ go.app = function() {
 
         self.call_api = function(sender, message) {
             return self.im.log([
-                "Dummy send to ", sender, ": ", message].join(""));
+                "Dummy CommCareApi call: sender=", sender,
+                ", message='", message, "'"].join(""));
         };
     });
 
@@ -463,7 +464,6 @@ go.app = function() {
                 next: 'states:start',
                 events: {
                     'state:enter': function (state) {
-                        console.log("foo");
                         return Q.all([
                             self.commcare.send_monthly_sms_1(
                                 self.im.user, self.report_states),
