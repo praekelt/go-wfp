@@ -359,7 +359,7 @@ describe("app", function() {
                 beforeEach(function() {
                     states_helper.init.state("days_of_feeding");
                     tester.setup.user.answers({
-                        'states:report:days_in_session': 5
+                        'states:report:days_in_session': "5"
                     });
                 });
 
@@ -415,7 +415,7 @@ describe("app", function() {
                 beforeEach(function() {
                     states_helper.init.state("attendance_male");
                     tester.setup.user.answers({
-                        'states:report:enrollment_male': 5,
+                        'states:report:enrollment_male': "5",
                     });
                 });
 
@@ -430,7 +430,7 @@ describe("app", function() {
                 beforeEach(function() {
                     states_helper.init.state("attendance_female");
                     tester.setup.user.answers({
-                        'states:report:enrollment_female': 5,
+                        'states:report:enrollment_female': "5",
                     });
                 });
 
@@ -462,7 +462,7 @@ describe("app", function() {
                 beforeEach(function() {
                     states_helper.init.state("beneficiaries_male");
                     tester.setup.user.answers({
-                        'states:report:attendance_male': 5,
+                        'states:report:attendance_male': "5",
                     });
                 });
 
@@ -477,7 +477,7 @@ describe("app", function() {
                 beforeEach(function() {
                     states_helper.init.state("beneficiaries_female");
                     tester.setup.user.answers({
-                        'states:report:attendance_female': 5,
+                        'states:report:attendance_female': "5",
                     });
                 });
 
@@ -509,8 +509,8 @@ describe("app", function() {
                 beforeEach(function() {
                     states_helper.init.state("not_fed:lack_of_food");
                     tester.setup.user.answers({
-                        'states:report:days_in_session': 7,
-                        'states:report:days_of_feeding': 3,
+                        'states:report:days_in_session': "7",
+                        'states:report:days_of_feeding': "3",
                     });
                 });
 
@@ -525,8 +525,8 @@ describe("app", function() {
                 beforeEach(function() {
                     states_helper.init.state("not_fed:lack_of_firewood");
                     tester.setup.user.answers({
-                        'states:report:days_in_session': 7,
-                        'states:report:days_of_feeding': 3,
+                        'states:report:days_in_session': "7",
+                        'states:report:days_of_feeding': "3",
                     });
                 });
 
@@ -541,8 +541,8 @@ describe("app", function() {
                 beforeEach(function() {
                     states_helper.init.state("not_fed:lack_of_water");
                     tester.setup.user.answers({
-                        'states:report:days_in_session': 7,
-                        'states:report:days_of_feeding': 3,
+                        'states:report:days_in_session': "7",
+                        'states:report:days_of_feeding': "3",
                     });
                 });
 
@@ -557,8 +557,8 @@ describe("app", function() {
                 beforeEach(function() {
                     states_helper.init.state("not_fed:cooks_absent");
                     tester.setup.user.answers({
-                        'states:report:days_in_session': 7,
-                        'states:report:days_of_feeding': 3,
+                        'states:report:days_in_session': "7",
+                        'states:report:days_of_feeding': "3",
                     });
                 });
 
@@ -573,8 +573,8 @@ describe("app", function() {
                 beforeEach(function() {
                     states_helper.init.state("not_fed:pupils_dislike_food");
                     tester.setup.user.answers({
-                        'states:report:days_in_session': 7,
-                        'states:report:days_of_feeding': 3,
+                        'states:report:days_in_session': "7",
+                        'states:report:days_of_feeding': "3",
                     });
                 });
 
@@ -589,8 +589,8 @@ describe("app", function() {
                 beforeEach(function() {
                     states_helper.init.state("not_fed:other");
                     tester.setup.user.answers({
-                        'states:report:days_in_session': 7,
-                        'states:report:days_of_feeding': 3,
+                        'states:report:days_in_session': "7",
+                        'states:report:days_of_feeding': "3",
                     });
                 });
 
