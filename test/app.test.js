@@ -398,8 +398,8 @@ describe("app", function() {
                 beforeEach(function() {
                     states_helper.init.state("enrollment_total");
                     tester.setup.user.answers({
-                        'states:report:enrollment_male': 5,
-                        'states:report:enrollment_female': 8
+                        'states:report:enrollment_male': "5",
+                        'states:report:enrollment_female': "8"
                     });
                 });
 
@@ -445,8 +445,8 @@ describe("app", function() {
                 beforeEach(function() {
                     states_helper.init.state("attendance_total");
                     tester.setup.user.answers({
-                        'states:report:attendance_male': 5,
-                        'states:report:attendance_female': 8
+                        'states:report:attendance_male': "5",
+                        'states:report:attendance_female': "8"
                     });
                 });
 
@@ -492,8 +492,8 @@ describe("app", function() {
                 beforeEach(function() {
                     states_helper.init.state("beneficiaries_total");
                     tester.setup.user.answers({
-                        'states:report:beneficiaries_male': 5,
-                        'states:report:beneficiaries_female': 8
+                        'states:report:beneficiaries_male': "5",
+                        'states:report:beneficiaries_female': "8"
                     });
                 });
 

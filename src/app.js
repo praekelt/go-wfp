@@ -310,7 +310,7 @@ go.app = function() {
             self.report_states.add(total_name, function(name) {
                 var total = _(opts.values)
                     .map(function (value) {
-                        return self.im.user.answers['states:report:' + value];
+                        return parseFloat(self.im.user.answers['states:report:' + value]);
                     })
                     .reduce(function (sum, n) { return sum + n; }, 0);
                 return new ChoiceState(name, {
