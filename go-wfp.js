@@ -24,7 +24,7 @@ go.app = function() {
 
         self.check = function(input) {
             var x = parseFloat(input);
-            if (_.isNaN(x)) {
+            if (_.isNaN(x) || !input.match(/^[\d]+(\.[\d]+)?$/)) {
                 return $("Expected a number.");
             }
             return self.additional_check(x);

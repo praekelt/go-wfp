@@ -225,6 +225,12 @@ describe("app", function() {
 
                 it("should accept 1.1 as an answer",
                    states_helper.accept_answer("1.1", 1.1));
+
+                it("should reject abc as an answer",
+                   states_helper.reject_answer("abc"));
+
+                it("should reject 123abc as an answer",
+                   states_helper.reject_answer("123abc"));
             });
 
             describe("when answering pulses:opening", function() {
