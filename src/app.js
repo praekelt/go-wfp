@@ -35,7 +35,7 @@ go.app = function() {
 
         self.check = function(input) {
             var x = parseFloat(input);
-            if (_.isNaN(x) || (x % 1 !== 0)) {
+            if (_.isNaN(x) || (x % 1 !== 0) || !input.match(/^[\d]+$/)) {
                 return $("Expected a whole number.");
             }
             return self.additional_check(x);
