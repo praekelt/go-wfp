@@ -24,8 +24,8 @@ go.app = function() {
 
         self.check = function(input) {
             var x = parseFloat(input);
-            if (_.isNaN(x)) {
-                return App.$("Expected a number.");
+            if (_.isNaN(x) || !input.match(/^[\d]+(\.[\d]+)?$/)) {
+                return $("Expected a number.");
             }
             return self.additional_check(x);
         };
@@ -38,7 +38,7 @@ go.app = function() {
 
         self.check = function(input) {
             var x = parseFloat(input);
-            if (_.isNaN(x) || (x % 1 !== 0)) {
+            if (_.isNaN(x) || (x % 1 !== 0) || !input.match(/^[\d]+$/)) {
                 return $("Expected a whole number.");
             }
             return self.additional_check(x);
@@ -313,7 +313,7 @@ go.app = function() {
             self.report_states.add(total_name, function(name) {
                 var total = _(opts.values)
                     .map(function (value) {
-                        return self.im.user.answers['states:report:' + value];
+                        return parseFloat(self.im.user.answers['states:report:' + value]);
                     })
                     .reduce(function (sum, n) { return sum + n; }, 0);
                 return new ChoiceState(name, {

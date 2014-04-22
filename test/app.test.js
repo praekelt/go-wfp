@@ -169,6 +169,43 @@ describe("app", function() {
             });
         });
 
+        function number_answer_tests(min, max, is_float) {
+            var float_in_range = (((min + max) / 2) + 0.1);
+            var common = [
+                {name: "should accept " + min + " as an answer", accept: true, input: '' + min, expected: min},
+                {name: "should accept " + max + " as an answer", accept: true, input: '' + max, expected: max},
+                {name: "should reject " + (min-1) + " as an answer", accept: false, input: '' + (min-1)},
+                {name: "should reject " + (max+1) + " as an answer", accept: false, input: '' + (max+1)},
+                {name: "should reject FOO as an answer", accept: false, input: 'FOO'},
+                {name: "should reject 123FOO as an answer", accept: false, input: '123FOO'},
+            ];
+
+            if (is_float) {
+                return common.concat([{
+                    name: "should accept " + float_in_range + " as an answer",
+                    accept: true,
+                    input: ''+ float_in_range,
+                    expected: float_in_range
+                }]);
+            } else {
+                return common.concat([{
+                    name: "should reject " + float_in_range + " as an answer",
+                    accept: false,
+                    input: ''+ float_in_range
+                }]);
+            }
+        }
+
+        function apply_answer_tests(states_helper, tests) {
+            tests.forEach(function (answerTest) {
+                if (answerTest.accept) {
+                    it(answerTest.name, states_helper.accept_answer(answerTest.input, answerTest.expected));
+                } else {
+                    it(answerTest.name, states_helper.reject_answer(answerTest.input));
+                }
+            });
+        }
+
         describe("when registering a school", function() {
             var states_helper = new SequentialStatesHelper();
 
@@ -211,20 +248,7 @@ describe("app", function() {
                    states_helper.display_correctly("Cereal opening (kg):")
                 );
 
-                it("should accept 0 as an answer",
-                   states_helper.accept_answer("0", 0));
-
-                it("should accept 20000 as an answer",
-                   states_helper.accept_answer("20000", 20000));
-
-                it("should reject -1 as an answer",
-                   states_helper.reject_answer("-1"));
-
-                it("should reject 20001 as an answer",
-                   states_helper.reject_answer("20001"));
-
-                it("should accept 1.1 as an answer",
-                   states_helper.accept_answer("1.1", 1.1));
+                apply_answer_tests(states_helper, number_answer_tests(0, 20000, true));
             });
 
             describe("when answering pulses:opening", function() {
@@ -236,20 +260,7 @@ describe("app", function() {
                    states_helper.display_correctly("Pulses opening (kg):")
                 );
 
-                it("should accept 0 as an answer",
-                   states_helper.accept_answer("0", 0));
-
-                it("should accept 20000 as an answer",
-                   states_helper.accept_answer("20000", 20000));
-
-                it("should reject -1 as an answer",
-                   states_helper.reject_answer("-1"));
-
-                it("should reject 20001 as an answer",
-                   states_helper.reject_answer("20001"));
-
-                it("should accept 1.1 as an answer",
-                   states_helper.accept_answer("1.1", 1.1));
+                apply_answer_tests(states_helper, number_answer_tests(0, 20000, true));
             });
 
             describe("when answering oil:opening", function() {
@@ -257,24 +268,7 @@ describe("app", function() {
                     states_helper.init.state("oil:opening");
                 });
 
-                it("should display state correctly",
-                   states_helper.display_correctly("Oil opening (kg):")
-                );
-
-                it("should accept 0 as an answer",
-                   states_helper.accept_answer("0", 0));
-
-                it("should accept 20000 as an answer",
-                   states_helper.accept_answer("20000", 20000));
-
-                it("should reject -1 as an answer",
-                   states_helper.reject_answer("-1"));
-
-                it("should reject 20001 as an answer",
-                   states_helper.reject_answer("20001"));
-
-                it("should accept 1.1 as an answer",
-                   states_helper.accept_answer("1.1", 1.1));
+                apply_answer_tests(states_helper, number_answer_tests(0, 20000, true));
             });
 
             describe("when completing registration", function() {
@@ -358,24 +352,14 @@ describe("app", function() {
                    states_helper.display_correctly("Number of school days in session:")
                 );
 
-                it("should accept 12 as an answer",
-                   states_helper.accept_answer("12", 12));
-
-                it("should reject 0 as an answer",
-                   states_helper.reject_answer("0"));
-
-                it("should reject 32 as an answer",
-                   states_helper.reject_answer("32"));
-
-                it("should reject FOO as an answer",
-                   states_helper.reject_answer("FOO"));
+                apply_answer_tests(states_helper, number_answer_tests(1, 31, false));
             });
 
             describe("when answering days_of_feeding", function() {
                 beforeEach(function() {
                     states_helper.init.state("days_of_feeding");
                     tester.setup.user.answers({
-                        'states:report:days_in_session': 5
+                        'states:report:days_in_session': "5"
                     });
                 });
 
@@ -383,17 +367,7 @@ describe("app", function() {
                    states_helper.display_correctly("Number of days food served:")
                 );
 
-                it("should accept 5 as an answer",
-                   states_helper.accept_answer("5", 5));
-
-                it("should reject -1 as an answer",
-                   states_helper.reject_answer("-1"));
-
-                it("should reject 6 as an answer",
-                   states_helper.reject_answer("6"));
-
-                it("should reject FOO as an answer",
-                   states_helper.reject_answer("FOO"));
+                apply_answer_tests(states_helper, number_answer_tests(0, 5, false));
             });
 
             describe("when answering enrollment_male", function() {
@@ -405,20 +379,7 @@ describe("app", function() {
                    states_helper.display_correctly("Male enrollment:")
                 );
 
-                it("should accept 0 as an answer",
-                   states_helper.accept_answer("0", 0));
-
-                it("should accept 10000 as an answer",
-                   states_helper.accept_answer("10000", 10000));
-
-                it("should reject -1 as an answer",
-                   states_helper.reject_answer("-1"));
-
-                it("should reject 10001 as an answer",
-                   states_helper.reject_answer("10001"));
-
-                it("should reject 1.1 as an answer",
-                   states_helper.reject_answer("1.1"));
+                apply_answer_tests(states_helper, number_answer_tests(0, 10000, false));
             });
 
             describe("when answering enrollment_female", function() {
@@ -430,28 +391,15 @@ describe("app", function() {
                    states_helper.display_correctly("Female enrollment:")
                 );
 
-                it("should accept 0 as an answer",
-                   states_helper.accept_answer("0", 0));
-
-                it("should accept 10000 as an answer",
-                   states_helper.accept_answer("10000", 10000));
-
-                it("should reject -1 as an answer",
-                   states_helper.reject_answer("-1"));
-
-                it("should reject 10001 as an answer",
-                   states_helper.reject_answer("10001"));
-
-                it("should reject 1.1 as an answer",
-                   states_helper.reject_answer("1.1"));
+                apply_answer_tests(states_helper, number_answer_tests(0, 10000, false));
             });
 
             describe("when displaying the total enrollment", function() {
                 beforeEach(function() {
                     states_helper.init.state("enrollment_total");
                     tester.setup.user.answers({
-                        'states:report:enrollment_male': 5,
-                        'states:report:enrollment_female': 8
+                        'states:report:enrollment_male': "5",
+                        'states:report:enrollment_female': "8"
                     });
                 });
 
@@ -467,7 +415,7 @@ describe("app", function() {
                 beforeEach(function() {
                     states_helper.init.state("attendance_male");
                     tester.setup.user.answers({
-                        'states:report:enrollment_male': 5,
+                        'states:report:enrollment_male': "5",
                     });
                 });
 
@@ -475,27 +423,14 @@ describe("app", function() {
                    states_helper.display_correctly("Male attendance (highest):")
                 );
 
-                it("should accept 0 as an answer",
-                   states_helper.accept_answer("0", 0));
-
-                it("should accept 5 as an answer",
-                   states_helper.accept_answer("5", 5));
-
-                it("should reject -1 as an answer",
-                   states_helper.reject_answer("-1"));
-
-                it("should reject 6 as an answer",
-                   states_helper.reject_answer("6"));
-
-                it("should reject 1.1 as an answer",
-                   states_helper.reject_answer("1.1"));
+                apply_answer_tests(states_helper, number_answer_tests(0, 5, false));
             });
 
             describe("when answering attendance_female", function() {
                 beforeEach(function() {
                     states_helper.init.state("attendance_female");
                     tester.setup.user.answers({
-                        'states:report:enrollment_female': 5,
+                        'states:report:enrollment_female': "5",
                     });
                 });
 
@@ -503,28 +438,15 @@ describe("app", function() {
                    states_helper.display_correctly("Female attendance (highest):")
                 );
 
-                it("should accept 0 as an answer",
-                   states_helper.accept_answer("0", 0));
-
-                it("should accept 5 as an answer",
-                   states_helper.accept_answer("5", 5));
-
-                it("should reject -1 as an answer",
-                   states_helper.reject_answer("-1"));
-
-                it("should reject 6 as an answer",
-                   states_helper.reject_answer("6"));
-
-                it("should reject 1.1 as an answer",
-                   states_helper.reject_answer("1.1"));
+                apply_answer_tests(states_helper, number_answer_tests(0, 5, false));
             });
 
             describe("when displaying the total attendance", function() {
                 beforeEach(function() {
                     states_helper.init.state("attendance_total");
                     tester.setup.user.answers({
-                        'states:report:attendance_male': 5,
-                        'states:report:attendance_female': 8
+                        'states:report:attendance_male': "5",
+                        'states:report:attendance_female': "8"
                     });
                 });
 
@@ -540,7 +462,7 @@ describe("app", function() {
                 beforeEach(function() {
                     states_helper.init.state("beneficiaries_male");
                     tester.setup.user.answers({
-                        'states:report:attendance_male': 5,
+                        'states:report:attendance_male': "5",
                     });
                 });
 
@@ -548,27 +470,14 @@ describe("app", function() {
                    states_helper.display_correctly("Male beneficiaries (highest):")
                 );
 
-                it("should accept 0 as an answer",
-                   states_helper.accept_answer("0", 0));
-
-                it("should accept 5 as an answer",
-                   states_helper.accept_answer("5", 5));
-
-                it("should reject -1 as an answer",
-                   states_helper.reject_answer("-1"));
-
-                it("should reject 6 as an answer",
-                   states_helper.reject_answer("6"));
-
-                it("should reject 1.1 as an answer",
-                   states_helper.reject_answer("1.1"));
+                apply_answer_tests(states_helper, number_answer_tests(0, 5, false));
             });
 
             describe("when answering beneficiaries_female", function() {
                 beforeEach(function() {
                     states_helper.init.state("beneficiaries_female");
                     tester.setup.user.answers({
-                        'states:report:attendance_female': 5,
+                        'states:report:attendance_female': "5",
                     });
                 });
 
@@ -576,28 +485,15 @@ describe("app", function() {
                    states_helper.display_correctly("Female beneficiaries (highest):")
                 );
 
-                it("should accept 0 as an answer",
-                   states_helper.accept_answer("0", 0));
-
-                it("should accept 5 as an answer",
-                   states_helper.accept_answer("5", 5));
-
-                it("should reject -1 as an answer",
-                   states_helper.reject_answer("-1"));
-
-                it("should reject 6 as an answer",
-                   states_helper.reject_answer("6"));
-
-                it("should reject 1.1 as an answer",
-                   states_helper.reject_answer("1.1"));
+                apply_answer_tests(states_helper, number_answer_tests(0, 5, false));
             });
 
             describe("when displaying the total beneficiaries", function() {
                 beforeEach(function() {
                     states_helper.init.state("beneficiaries_total");
                     tester.setup.user.answers({
-                        'states:report:beneficiaries_male': 5,
-                        'states:report:beneficiaries_female': 8
+                        'states:report:beneficiaries_male': "5",
+                        'states:report:beneficiaries_female': "8"
                     });
                 });
 
@@ -613,8 +509,8 @@ describe("app", function() {
                 beforeEach(function() {
                     states_helper.init.state("not_fed:lack_of_food");
                     tester.setup.user.answers({
-                        'states:report:days_in_session': 7,
-                        'states:report:days_of_feeding': 3,
+                        'states:report:days_in_session': "7",
+                        'states:report:days_of_feeding': "3",
                     });
                 });
 
@@ -622,28 +518,15 @@ describe("app", function() {
                    states_helper.display_correctly("Number of days pupils not fed for - Lack of food:")
                 );
 
-                it("should accept 0 as an answer",
-                   states_helper.accept_answer("0", 0));
-
-                it("should accept 4 as an answer",
-                   states_helper.accept_answer("4", 4));
-
-                it("should reject -1 as an answer",
-                   states_helper.reject_answer("-1"));
-
-                it("should reject 5 as an answer",
-                   states_helper.reject_answer("5"));
-
-                it("should reject 1.1 as an answer",
-                   states_helper.reject_answer("1.1"));
+                apply_answer_tests(states_helper, number_answer_tests(0, 4, false));
             });
 
             describe("when answering not_fed:lack_of_firewood", function() {
                 beforeEach(function() {
                     states_helper.init.state("not_fed:lack_of_firewood");
                     tester.setup.user.answers({
-                        'states:report:days_in_session': 7,
-                        'states:report:days_of_feeding': 3,
+                        'states:report:days_in_session': "7",
+                        'states:report:days_of_feeding': "3",
                     });
                 });
 
@@ -651,28 +534,15 @@ describe("app", function() {
                    states_helper.display_correctly("Number of days pupils not fed for - Lack of firewood:")
                 );
 
-                it("should accept 0 as an answer",
-                   states_helper.accept_answer("0", 0));
-
-                it("should accept 4 as an answer",
-                   states_helper.accept_answer("4", 4));
-
-                it("should reject -1 as an answer",
-                   states_helper.reject_answer("-1"));
-
-                it("should reject 5 as an answer",
-                   states_helper.reject_answer("5"));
-
-                it("should reject 1.1 as an answer",
-                   states_helper.reject_answer("1.1"));
+                apply_answer_tests(states_helper, number_answer_tests(0, 4, false));
             });
 
             describe("when answering not_fed:lack_of_water", function() {
                 beforeEach(function() {
                     states_helper.init.state("not_fed:lack_of_water");
                     tester.setup.user.answers({
-                        'states:report:days_in_session': 7,
-                        'states:report:days_of_feeding': 3,
+                        'states:report:days_in_session': "7",
+                        'states:report:days_of_feeding': "3",
                     });
                 });
 
@@ -680,28 +550,15 @@ describe("app", function() {
                    states_helper.display_correctly("Number of days pupils not fed for - Lack of water:")
                 );
 
-                it("should accept 0 as an answer",
-                   states_helper.accept_answer("0", 0));
-
-                it("should accept 4 as an answer",
-                   states_helper.accept_answer("4", 4));
-
-                it("should reject -1 as an answer",
-                   states_helper.reject_answer("-1"));
-
-                it("should reject 5 as an answer",
-                   states_helper.reject_answer("5"));
-
-                it("should reject 1.1 as an answer",
-                   states_helper.reject_answer("1.1"));
+                apply_answer_tests(states_helper, number_answer_tests(0, 4, false));
             });
 
             describe("when answering not_fed:cooks_absent", function() {
                 beforeEach(function() {
                     states_helper.init.state("not_fed:cooks_absent");
                     tester.setup.user.answers({
-                        'states:report:days_in_session': 7,
-                        'states:report:days_of_feeding': 3,
+                        'states:report:days_in_session': "7",
+                        'states:report:days_of_feeding': "3",
                     });
                 });
 
@@ -709,28 +566,15 @@ describe("app", function() {
                    states_helper.display_correctly("Number of days pupils not fed for - Cooks absent:")
                 );
 
-                it("should accept 0 as an answer",
-                   states_helper.accept_answer("0", 0));
-
-                it("should accept 4 as an answer",
-                   states_helper.accept_answer("4", 4));
-
-                it("should reject -1 as an answer",
-                   states_helper.reject_answer("-1"));
-
-                it("should reject 5 as an answer",
-                   states_helper.reject_answer("5"));
-
-                it("should reject 1.1 as an answer",
-                   states_helper.reject_answer("1.1"));
+                apply_answer_tests(states_helper, number_answer_tests(0, 4, false));
             });
 
             describe("when answering not_fed:pupils_dislike_food", function() {
                 beforeEach(function() {
                     states_helper.init.state("not_fed:pupils_dislike_food");
                     tester.setup.user.answers({
-                        'states:report:days_in_session': 7,
-                        'states:report:days_of_feeding': 3,
+                        'states:report:days_in_session': "7",
+                        'states:report:days_of_feeding': "3",
                     });
                 });
 
@@ -738,28 +582,15 @@ describe("app", function() {
                    states_helper.display_correctly("Number of days pupils not fed for - Pupils dislike food:")
                 );
 
-                it("should accept 0 as an answer",
-                   states_helper.accept_answer("0", 0));
-
-                it("should accept 4 as an answer",
-                   states_helper.accept_answer("4", 4));
-
-                it("should reject -1 as an answer",
-                   states_helper.reject_answer("-1"));
-
-                it("should reject 5 as an answer",
-                   states_helper.reject_answer("5"));
-
-                it("should reject 1.1 as an answer",
-                   states_helper.reject_answer("1.1"));
+                apply_answer_tests(states_helper, number_answer_tests(0, 4, false));
             });
 
             describe("when answering not_fed:other", function() {
                 beforeEach(function() {
                     states_helper.init.state("not_fed:other");
                     tester.setup.user.answers({
-                        'states:report:days_in_session': 7,
-                        'states:report:days_of_feeding': 3,
+                        'states:report:days_in_session': "7",
+                        'states:report:days_of_feeding': "3",
                     });
                 });
 
@@ -767,20 +598,7 @@ describe("app", function() {
                    states_helper.display_correctly("Number of days pupils not fed for - Other:")
                 );
 
-                it("should accept 0 as an answer",
-                   states_helper.accept_answer("0", 0));
-
-                it("should accept 4 as an answer",
-                   states_helper.accept_answer("4", 4));
-
-                it("should reject -1 as an answer",
-                   states_helper.reject_answer("-1"));
-
-                it("should reject 5 as an answer",
-                   states_helper.reject_answer("5"));
-
-                it("should reject 1.1 as an answer",
-                   states_helper.reject_answer("1.1"));
+                apply_answer_tests(states_helper, number_answer_tests(0, 4, false));
             });
 
             describe("when answering cereal:received", function() {
@@ -792,20 +610,7 @@ describe("app", function() {
                    states_helper.display_correctly("Cereal received (kg):")
                 );
 
-                it("should accept 0 as an answer",
-                   states_helper.accept_answer("0", 0));
-
-                it("should accept 20000 as an answer",
-                   states_helper.accept_answer("20000", 20000));
-
-                it("should reject -1 as an answer",
-                   states_helper.reject_answer("-1"));
-
-                it("should reject 20001 as an answer",
-                   states_helper.reject_answer("20001"));
-
-                it("should accept 1.1 as an answer",
-                   states_helper.accept_answer("1.1", 1.1));
+                apply_answer_tests(states_helper, number_answer_tests(0, 20000, true));
             });
 
             describe("when answering cereal:used", function() {
@@ -817,20 +622,7 @@ describe("app", function() {
                    states_helper.display_correctly("Cereal used (kg):")
                 );
 
-                it("should accept 0 as an answer",
-                   states_helper.accept_answer("0", 0));
-
-                it("should accept 20000 as an answer",
-                   states_helper.accept_answer("20000", 20000));
-
-                it("should reject -1 as an answer",
-                   states_helper.reject_answer("-1"));
-
-                it("should reject 20001 as an answer",
-                   states_helper.reject_answer("20001"));
-
-                it("should accept 1.1 as an answer",
-                   states_helper.accept_answer("1.1", 1.1));
+                apply_answer_tests(states_helper, number_answer_tests(0, 20000, true));
             });
 
             describe("when answering cereal:losses", function() {
@@ -842,20 +634,7 @@ describe("app", function() {
                    states_helper.display_correctly("Cereal lost (kg):")
                 );
 
-                it("should accept 0 as an answer",
-                   states_helper.accept_answer("0", 0));
-
-                it("should accept 20000 as an answer",
-                   states_helper.accept_answer("20000", 20000));
-
-                it("should reject -1 as an answer",
-                   states_helper.reject_answer("-1"));
-
-                it("should reject 20001 as an answer",
-                   states_helper.reject_answer("20001"));
-
-                it("should accept 1.1 as an answer",
-                   states_helper.accept_answer("1.1", 1.1));
+                apply_answer_tests(states_helper, number_answer_tests(0, 20000, true));
             });
 
             describe("when answering pulses:received", function() {
@@ -867,20 +646,7 @@ describe("app", function() {
                    states_helper.display_correctly("Pulses received (kg):")
                 );
 
-                it("should accept 0 as an answer",
-                   states_helper.accept_answer("0", 0));
-
-                it("should accept 20000 as an answer",
-                   states_helper.accept_answer("20000", 20000));
-
-                it("should reject -1 as an answer",
-                   states_helper.reject_answer("-1"));
-
-                it("should reject 20001 as an answer",
-                   states_helper.reject_answer("20001"));
-
-                it("should accept 1.1 as an answer",
-                   states_helper.accept_answer("1.1", 1.1));
+                apply_answer_tests(states_helper, number_answer_tests(0, 20000, true));
             });
 
             describe("when answering pulses:used", function() {
@@ -892,20 +658,7 @@ describe("app", function() {
                    states_helper.display_correctly("Pulses used (kg):")
                 );
 
-                it("should accept 0 as an answer",
-                   states_helper.accept_answer("0", 0));
-
-                it("should accept 20000 as an answer",
-                   states_helper.accept_answer("20000", 20000));
-
-                it("should reject -1 as an answer",
-                   states_helper.reject_answer("-1"));
-
-                it("should reject 20001 as an answer",
-                   states_helper.reject_answer("20001"));
-
-                it("should accept 1.1 as an answer",
-                   states_helper.accept_answer("1.1", 1.1));
+                apply_answer_tests(states_helper, number_answer_tests(0, 20000, true));
             });
 
             describe("when answering pulses:losses", function() {
@@ -917,20 +670,7 @@ describe("app", function() {
                    states_helper.display_correctly("Pulses lost (kg):")
                 );
 
-                it("should accept 0 as an answer",
-                   states_helper.accept_answer("0", 0));
-
-                it("should accept 20000 as an answer",
-                   states_helper.accept_answer("20000", 20000));
-
-                it("should reject -1 as an answer",
-                   states_helper.reject_answer("-1"));
-
-                it("should reject 20001 as an answer",
-                   states_helper.reject_answer("20001"));
-
-                it("should accept 1.1 as an answer",
-                   states_helper.accept_answer("1.1", 1.1));
+                apply_answer_tests(states_helper, number_answer_tests(0, 20000, true));
             });
 
             describe("when answering oil:received", function() {
@@ -942,20 +682,7 @@ describe("app", function() {
                    states_helper.display_correctly("Oil received (kg):")
                 );
 
-                it("should accept 0 as an answer",
-                   states_helper.accept_answer("0", 0));
-
-                it("should accept 20000 as an answer",
-                   states_helper.accept_answer("20000", 20000));
-
-                it("should reject -1 as an answer",
-                   states_helper.reject_answer("-1"));
-
-                it("should reject 20001 as an answer",
-                   states_helper.reject_answer("20001"));
-
-                it("should accept 1.1 as an answer",
-                   states_helper.accept_answer("1.1", 1.1));
+                apply_answer_tests(states_helper, number_answer_tests(0, 20000, true));
             });
 
             describe("when answering oil:used", function() {
@@ -967,20 +694,7 @@ describe("app", function() {
                    states_helper.display_correctly("Oil used (kg):")
                 );
 
-                it("should accept 0 as an answer",
-                   states_helper.accept_answer("0", 0));
-
-                it("should accept 20000 as an answer",
-                   states_helper.accept_answer("20000", 20000));
-
-                it("should reject -1 as an answer",
-                   states_helper.reject_answer("-1"));
-
-                it("should reject 20001 as an answer",
-                   states_helper.reject_answer("20001"));
-
-                it("should accept 1.1 as an answer",
-                   states_helper.accept_answer("1.1", 1.1));
+                apply_answer_tests(states_helper, number_answer_tests(0, 20000, true));
             });
 
             describe("when answering oil:losses", function() {
@@ -992,20 +706,7 @@ describe("app", function() {
                    states_helper.display_correctly("Oil lost (kg):")
                 );
 
-                it("should accept 0 as an answer",
-                   states_helper.accept_answer("0", 0));
-
-                it("should accept 20000 as an answer",
-                   states_helper.accept_answer("20000", 20000));
-
-                it("should reject -1 as an answer",
-                   states_helper.reject_answer("-1"));
-
-                it("should reject 20001 as an answer",
-                   states_helper.reject_answer("20001"));
-
-                it("should accept 1.1 as an answer",
-                   states_helper.accept_answer("1.1", 1.1));
+                apply_answer_tests(states_helper, number_answer_tests(0, 20000, true));
             });
 
             describe("when completing the report", function() {
