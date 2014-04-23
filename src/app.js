@@ -246,8 +246,9 @@ go.app = function() {
         });
 
         self.add_reg_question('emis', {
-            state: FreeText,
-            question: $('EMIS:')
+            state: IntegerState,
+            question: $('EMIS:'),
+            check: function(i) {}
         });
 
         self.add_reg_goods_question('cereal:opening', {

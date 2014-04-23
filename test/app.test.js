@@ -237,6 +237,9 @@ describe("app", function() {
 
                 it("should accept 12345 as an answer",
                    states_helper.accept_answer("12345", "12345"));
+
+                it("should reject 123abc as an answer",
+                   states_helper.reject_answer("123abc"));
             });
 
             describe("when answering cereal:opening", function() {
