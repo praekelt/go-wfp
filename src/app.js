@@ -1,7 +1,6 @@
 go.app = function() {
     var vumigo = require('vumigo_v02');
     var _ = require("lodash");
-    var Q = require("q");
     var App = vumigo.App;
     var Choice = vumigo.states.Choice;
     var ChoiceState = vumigo.states.ChoiceState;
@@ -112,9 +111,9 @@ go.app = function() {
             return self.call_api(user.addr, message);
         };
 
-        self.send_monthly_sms_1 = function(user, seq_states) {
+        self.send_monthly_sms = function(user, seq_states) {
             var template = self.make_template([
-                ["hgsf1 ", "school_id"],
+                ["hgsfussd ", "school_id"],
                 ["sch", "days_in_session"], ["fed", "days_of_feeding"],
                 ["enr-m", "enrollment_male"], ["enr-f", "enrollment_female"],
                 ["att-m", "attendance_male"], ["att-f", "attendance_female"],
@@ -125,17 +124,7 @@ go.app = function() {
                 ["nofed-c", "not_fed:lack_of_water"],
                 ["nofed-d", "not_fed:cooks_absent"],
                 ["nofed-e", "not_fed:pupils_dislike_food"],
-                ["nofed-f", "not_fed:other"]
-            ]);
-            var message = template({
-                answer: _.partial(seq_states.answer, user)
-            });
-            return self.call_api(user.addr, message);
-        };
-
-        self.send_monthly_sms_2 = function(user, seq_states) {
-            var template = self.make_template([
-                ["hgsf2 ", "school_id"],
+                ["nofed-f", "not_fed:other"],
                 ["cer-r", "cereal:received"], ["cer-u", "cereal:used"],
                 ["cer-l", "cereal:losses"],
                 ["pul-r", "pulses:received"], ["pul-u", "pulses:used"],
@@ -246,8 +235,9 @@ go.app = function() {
         });
 
         self.add_reg_question('emis', {
-            state: FreeText,
-            question: $('EMIS:')
+            state: IntegerState,
+            question: $('EMIS:'),
+            check: function(i) {}
         });
 
         self.add_reg_goods_question('cereal:opening', {
@@ -469,12 +459,8 @@ go.app = function() {
                     // is a suspected bug in vumigo_v02 currently:
                     // https://github.com/praekelt/vumi-jssandbox-toolkit/issues/177
                     'state:show': function (state) {
-                        return Q.all([
-                            self.commcare.send_monthly_sms_1(
-                                self.im.user, self.report_states),
-                            self.commcare.send_monthly_sms_2(
-                                self.im.user, self.report_states)
-                        ]);
+                        return self.commcare.send_monthly_sms(
+                                self.im.user, self.report_states);
                     }
                 }
             });

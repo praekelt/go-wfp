@@ -237,6 +237,9 @@ describe("app", function() {
 
                 it("should accept 12345 as an answer",
                    states_helper.accept_answer("12345", "12345"));
+
+                it("should reject 123abc as an answer",
+                   states_helper.reject_answer("123abc"));
             });
 
             describe("when answering cereal:opening", function() {
@@ -731,21 +734,15 @@ describe("app", function() {
                     return tester
                         .input("302")
                         .check(function(api, im, app) {
-                            smses = api.log.info.slice(-2);
+                            smses = api.log.info.slice(-1);
                             assert.strictEqual(smses[0], [
                                 "Dummy CommCareApi call: sender=+27123456789,",
                                 " message='",
-                                "hgsf1 SCHOOL123 sch30 fed20",
+                                "hgsfussd SCHOOL123 sch30 fed20",
                                 " enr-m100 enr-f150 att-m75 att-f85",
                                 " ben-m70 ben-f80",
                                 " nofed-a1 nofed-b2 nofed-c3",
                                 " nofed-d4 nofed-e5 nofed-f6",
-                                "'",
-                            ].join(""));
-                            assert.strictEqual(smses[1], [
-                                "Dummy CommCareApi call: sender=+27123456789,",
-                                " message='",
-                                "hgsf2 SCHOOL123",
                                 " cer-r100 cer-u101 cer-l102",
                                 " pul-r200 pul-u201 pul-l202",
                                 " oil-r300 oil-u301 oil-l302",
@@ -762,20 +759,14 @@ describe("app", function() {
                         })
                         .input("302")
                         .check(function(api, im, app) {
-                            smses = api.log.info.slice(-2);
+                            smses = api.log.info.slice(-1);
                             assert.strictEqual(smses[0], [
                                 "CommCareApi call:",
                                 " code=200, body=\"OK\", sender=+27123456789,",
-                                " message='hgsf1 SCHOOL123 sch30 fed20",
+                                " message='hgsfussd SCHOOL123 sch30 fed20",
                                 " enr-m100 enr-f150 att-m75 att-f85 ben-m70",
                                 " ben-f80 nofed-a1 nofed-b2 nofed-c3 nofed-d4",
-                                " nofed-e5 nofed-f6",
-                                "'",
-                            ].join(""));
-                            assert.strictEqual(smses[1], [
-                                "CommCareApi call:",
-                                " code=200, body=\"OK\", sender=+27123456789,",
-                                " message='hgsf2 SCHOOL123 cer-r100 cer-u101",
+                                " nofed-e5 nofed-f6 cer-r100 cer-u101",
                                 " cer-l102 pul-r200 pul-u201 pul-l202",
                                 " oil-r300 oil-u301 oil-l302",
                                 "'",
