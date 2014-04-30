@@ -1,6 +1,7 @@
 go.app = function() {
     var vumigo = require('vumigo_v02');
     var _ = require("lodash");
+    var Q = require("q");
     var App = vumigo.App;
     var Choice = vumigo.states.Choice;
     var ChoiceState = vumigo.states.ChoiceState;
@@ -152,6 +153,8 @@ go.app = function() {
     var GoApp = App.extend(function(self) {
         App.call(self, 'states:start');
 
+        self.contact = null;
+
         self.init = function() {
             if (!self.im.config.commcare_api) {
                 self.commcare = new DummyCommCareApi(self.im);
@@ -161,6 +164,10 @@ go.app = function() {
                     self.im,
                     self.im.config.commcare_api);
             }
+            return self.im.contacts.for_user()
+                .then(function(contact) {
+                    self.contact = contact;
+                });
         };
 
         // Utilities
@@ -189,12 +196,19 @@ go.app = function() {
         // Start
 
         self.states.add('states:start', function(name) {
+            var choices = [];
+
+            if (self.contact.extra.registered_for_wfp !== 'true') {
+                choices.push(new Choice('states:register', $('Register')));
+            }
+            else {
+                choices.push(new Choice('states:report', $('Report')));
+            }
+            choices.push(new Choice('states:end', $('Exit')));
+
             return new MenuState(name, {
                 question: $('Welcome to the World Feed Program.'),
-                choices: [
-                    new Choice('states:register', $('Register')),
-                    new Choice('states:report', $('Report')),
-                    new Choice('states:end', $('Exit'))],
+                choices: choices
             });
         });
 
@@ -261,8 +275,12 @@ go.app = function() {
                     // is a suspected bug in vumigo_v02 currently:
                     // https://github.com/praekelt/vumi-jssandbox-toolkit/issues/177
                     'state:show': function (state) {
-                        return self.commcare.set_opening_balances(
-                            self.im.user, self.reg_states);
+                        self.contact.extra.registered_for_wfp = 'true';
+                        return Q.all([
+                            self.commcare.set_opening_balances(
+                                self.im.user, self.reg_states),
+                            self.im.contacts.save(self.contact)
+                        ]);
                     }
                 }
             });
