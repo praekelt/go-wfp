@@ -91,6 +91,20 @@ var SequentialStatesHelper = Extendable.extend(function(self) {
 });
 
 
+function setup_registered_user(tester) {
+    return tester
+        .setup.user.addr('+1234')
+        .setup(function (api) {
+            api.contacts.add({
+                msisdn: '+1234',
+                extra: {
+                    registered_for_wfp: 'true',
+                }
+            });
+        });
+}
+
+
 describe("app", function() {
     describe("GoApp", function() {
         var app;
@@ -110,7 +124,7 @@ describe("app", function() {
                 });
         });
 
-        describe("when the user starts a session", function() {
+        describe("when an unregistered user starts a session", function() {
             it("should show them the start menu", function() {
                 return tester
                     .start()
@@ -119,15 +133,45 @@ describe("app", function() {
                         reply: [
                             'Welcome to the World Feed Program.',
                             '1. Register',
-                            '2. Report',
-                            '3. Exit'
+                            '2. Exit'
                         ].join('\n')
                     })
                     .run();
             });
         });
 
-        describe("when the user is at the start menu", function() {
+        describe("when a registered user starts a session", function() {
+            beforeEach(function() {
+                setup_registered_user(tester);
+            });
+
+            it("should show them the start menu", function() {
+                return tester
+                    .setup.user({
+                        addr: '+1234',
+                    })
+                    .setup(function (api) {
+                        api.contacts.add({
+                            msisdn: '+1234',
+                            extra: {
+                                registered_for_wfp: 'true',
+                            }
+                        });
+                    })
+                    .start()
+                    .check.interaction({
+                        state: 'states:start',
+                        reply: [
+                            'Welcome to the World Feed Program.',
+                            '1. Report',
+                            '2. Exit'
+                        ].join('\n')
+                    })
+                    .run();
+            });
+        });
+
+        describe("when an unregistered user is at the start menu", function() {
             describe("when the user selects registration", function() {
                 it("should show the first registration question", function() {
                     return tester
@@ -141,11 +185,31 @@ describe("app", function() {
                 });
             });
 
+            describe("when the user asks to exit", function() {
+                it("should say thank you and end the session", function() {
+                    return tester
+                        .setup.user.state('states:start')
+                        .input('2')
+                        .check.interaction({
+                            state: 'states:end',
+                            reply: 'Bye!'
+                        })
+                        .check.reply.ends_session()
+                        .run();
+                });
+            });
+        });
+
+        describe("when a registered user is at the start menu", function() {
+            beforeEach(function() {
+                setup_registered_user(tester);
+            });
+
             describe("when the user selects reporting", function() {
                 it("should show the first reporting question", function() {
                     return tester
                         .setup.user.state('states:start')
-                        .input('2')
+                        .input('1')
                         .check.interaction({
                             state: 'states:report:school_id',
                             reply: 'School ID:',
@@ -158,7 +222,7 @@ describe("app", function() {
                 it("should say thank you and end the session", function() {
                     return tester
                         .setup.user.state('states:start')
-                        .input('3')
+                        .input('2')
                         .check.interaction({
                             state: 'states:end',
                             reply: 'Bye!'
@@ -319,6 +383,20 @@ describe("app", function() {
                                 " cer-o12.5 pul-o14 oil-o10",
                                 "'",
                             ].join(""));
+                        })
+                        .run();
+                });
+
+                it("should mark the contact as registered", function() {
+                    return tester
+                        .input("10")
+                        .check(function(api, im, app) {
+                            var contacts = _.where(api.contacts.store,
+                                                   {msisdn: "+27123456789"});
+                            assert.equal(contacts.length, 1);
+                            assert.deepEqual(contacts[0].extra, {
+                                registered_for_wfp: "true",
+                            });
                         })
                         .run();
                 });
