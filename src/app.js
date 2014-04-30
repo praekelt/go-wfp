@@ -3,6 +3,7 @@ go.app = function() {
     var _ = require("lodash");
     var Q = require("q");
     var App = vumigo.App;
+    var AppStates = vumigo.app.AppStates;
     var Choice = vumigo.states.Choice;
     var ChoiceState = vumigo.states.ChoiceState;
     var MenuState = vumigo.states.MenuState;
@@ -150,8 +151,50 @@ go.app = function() {
         };
     });
 
+    var GoAppStates = AppStates.extend(function(self, app) {
+        AppStates.call(self, app);
+
+        self.add('__restart__', function(name, opts) {
+            return new ChoiceState(name, {
+                question: $('Welcome back to the World Feed Program.' +
+                            ' Do you want to:'),
+                choices: [
+                    new Choice('resume', $('Continue from where you were')),
+                    new Choice('restart', $('Restart from the beginning')),
+                ],
+                next: function(choice) {
+                    if (choice.value === 'resume') {
+                        return {
+                            name: opts.prev_state_name,
+                            creator_opts: opts.prev_state_opts,
+                        };
+                    }
+                    return self.app.start_state_name;
+                }
+            });
+        });
+
+        self.is_new_session = function() {
+            return self.im.msg.session_event === 'new';
+        };
+
+        self._create_super = self.create;
+        self.create = function(name, opts) {
+            if (self.is_new_session() && name != self.app.start_state_name) {
+                return self._create_super(
+                    '__restart__', {
+                        prev_state_name: name,
+                        prev_state_opts: opts
+                    });
+            }
+            return self._create_super(name, opts);
+        };
+    });
+
     var GoApp = App.extend(function(self) {
-        App.call(self, 'states:start');
+        App.call(self, 'states:start', {
+            AppStates: GoAppStates,
+        });
 
         self.contact = null;
 

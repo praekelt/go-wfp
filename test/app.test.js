@@ -37,7 +37,7 @@ var SequentialStatesHelper = Extendable.extend(function(self) {
                     return user;
                 })
                 .setup.user.state(state_name)
-                .input(null)
+                .input({content: null, session_event: 'resume'})
                 .check.reply(reply)
                 .check.user(function (user) {
                     assert.deepEqual(user.answers, expected_answers);
@@ -171,6 +171,35 @@ describe("app", function() {
             });
         });
 
+        describe("when a user starts a session in non-start state", function() {
+            beforeEach(function() {
+                tester.setup.user.state('states:register');
+            });
+
+            it("should show them the restart menu", function() {
+                return tester
+                    .start()
+                    .check.interaction({
+                        state: {
+                            name: '__restart__',
+                            creator_opts: {
+                                prev_state_name: 'states:register',
+                                prev_state_opts: {},
+                            },
+                            metadata: {
+                            },
+                        },
+                        reply: [
+                            'Welcome back to the World Feed Program.' +
+                            ' Do you want to:',
+                            '1. Continue from where you were',
+                            '2. Restart from the beginning'
+                        ].join('\n')
+                    })
+                    .run();
+            });
+        });
+
         describe("when an unregistered user is at the start menu", function() {
             describe("when the user selects registration", function() {
                 it("should show the first registration question", function() {
@@ -230,6 +259,58 @@ describe("app", function() {
                         .check.reply.ends_session()
                         .run();
                 });
+            });
+        });
+
+        describe("when a user is in the __restart__ state", function() {
+            beforeEach(function() {
+                tester.setup.user.state({
+                    name: '__restart__',
+                    creator_opts: {
+                        prev_state_name: 'states:register:school_id',
+                        prev_state_opts: {
+                            droids: "you are looking for",
+                        },
+                    },
+                });
+            });
+
+            it("should resume if they select continue", function() {
+                return tester
+                    .input('1')
+                    .check.interaction({
+                        state: {
+                            name: 'states:register:school_id',
+                            creator_opts: {
+                                droids: "you are looking for",
+                            },
+                            metadata: {
+                            },
+                        },
+                        reply: [
+                            'School ID:'
+                        ].join('\n')
+                    })
+                    .run();
+            });
+
+            it("should return to the start menu if they select restart",
+            function() {
+                return tester
+                    .input('2')
+                    .check.interaction({
+                        state: {
+                            name: 'states:start',
+                            creator_opts: {},
+                            metadata: {},
+                        },
+                        reply: [
+                            'Welcome to the World Feed Program.',
+                            '1. Register',
+                            '2. Exit',
+                        ].join('\n')
+                    })
+                    .run();
             });
         });
 
