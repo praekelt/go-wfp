@@ -133,7 +133,8 @@ describe("app", function() {
                         reply: [
                             'Welcome to the Home Grown School Feeding Program.',
                             '1. Register',
-                            '2. Exit'
+                            '2. Report',
+                            '3. Exit'
                         ].join('\n')
                     })
                     .run();
@@ -163,8 +164,9 @@ describe("app", function() {
                         state: 'states:start',
                         reply: [
                             'Welcome to the Home Grown School Feeding Program.',
-                            '1. Report',
-                            '2. Exit'
+                            '1. Register',
+                            '2. Report',
+                            '3. Exit'
                         ].join('\n')
                     })
                     .run();
@@ -218,7 +220,7 @@ describe("app", function() {
                 it("should say thank you and end the session", function() {
                     return tester
                         .setup.user.state('states:start')
-                        .input('2')
+                        .input('3')
                         .check.interaction({
                             state: 'states:end',
                             reply: 'Bye!'
@@ -234,11 +236,24 @@ describe("app", function() {
                 setup_registered_user(tester);
             });
 
+            describe("when the user selects registration", function() {
+                it("should show the first registration question", function() {
+                    return tester
+                        .setup.user.state('states:start')
+                        .input('1')
+                        .check.interaction({
+                            state: 'states:register:school_id',
+                            reply: 'School ID:',
+                        })
+                        .run();
+                });
+            });
+
             describe("when the user selects reporting", function() {
                 it("should show the first reporting question", function() {
                     return tester
                         .setup.user.state('states:start')
-                        .input('1')
+                        .input('2')
                         .check.interaction({
                             state: 'states:report:school_id',
                             reply: 'School ID:',
@@ -251,7 +266,7 @@ describe("app", function() {
                 it("should say thank you and end the session", function() {
                     return tester
                         .setup.user.state('states:start')
-                        .input('2')
+                        .input('3')
                         .check.interaction({
                             state: 'states:end',
                             reply: 'Bye!'
@@ -307,7 +322,8 @@ describe("app", function() {
                         reply: [
                             'Welcome to the Home Grown School Feeding Program.',
                             '1. Register',
-                            '2. Exit',
+                            '2. Report',
+                            '3. Exit',
                         ].join('\n')
                     })
                     .run();

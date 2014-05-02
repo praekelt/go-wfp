@@ -242,20 +242,14 @@ go.app = function() {
         // Start
 
         self.states.add('states:start', function(name) {
-            var choices = [];
-
-            if (self.contact.extra.registered_for_wfp !== 'true') {
-                choices.push(new Choice('states:register', $('Register')));
-            }
-            else {
-                choices.push(new Choice('states:report', $('Report')));
-            }
-            choices.push(new Choice('states:end', $('Exit')));
-
             return new MenuState(name, {
                 question: $('Welcome to the Home Grown School Feeding' +
                             ' Program.'),
-                choices: choices
+                choices: [
+                    new Choice('states:register', $('Register')),
+                    new Choice('states:report', $('Report')),
+                    new Choice('states:end', $('Exit')),
+                ],
             });
         });
 
