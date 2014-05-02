@@ -330,7 +330,7 @@ describe("app", function() {
             });
         });
 
-        describe.only("when a user is in a non-resumable state", function() {
+        describe("when a user is in a non-resumable state", function() {
             describe("the __restart__ state should not be shown", function() {
                 _.forEach([
                     {initial_state: 'states:start', final_state: 'states:start'},
