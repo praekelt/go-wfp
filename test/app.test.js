@@ -131,7 +131,7 @@ describe("app", function() {
                     .check.interaction({
                         state: 'states:start',
                         reply: [
-                            'Welcome to the World Feed Program.',
+                            'Welcome to the Home Grown School Feeding Program.',
                             '1. Register',
                             '2. Exit'
                         ].join('\n')
@@ -162,7 +162,7 @@ describe("app", function() {
                     .check.interaction({
                         state: 'states:start',
                         reply: [
-                            'Welcome to the World Feed Program.',
+                            'Welcome to the Home Grown School Feeding Program.',
                             '1. Report',
                             '2. Exit'
                         ].join('\n')
@@ -190,8 +190,8 @@ describe("app", function() {
                             },
                         },
                         reply: [
-                            'Welcome back to the World Feed Program.' +
-                            ' Do you want to:',
+                            'Welcome back to the Home Grown School Feeding' +
+                            ' Program. Do you want to:',
                             '1. Continue from where you were',
                             '2. Restart from the beginning'
                         ].join('\n')
@@ -305,7 +305,7 @@ describe("app", function() {
                             metadata: {},
                         },
                         reply: [
-                            'Welcome to the World Feed Program.',
+                            'Welcome to the Home Grown School Feeding Program.',
                             '1. Register',
                             '2. Exit',
                         ].join('\n')

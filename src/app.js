@@ -156,8 +156,8 @@ go.app = function() {
 
         self.add('__restart__', function(name, opts) {
             return new ChoiceState(name, {
-                question: $('Welcome back to the World Feed Program.' +
-                            ' Do you want to:'),
+                question: $('Welcome back to the Home Grown School' +
+                            ' Feeding Program. Do you want to:'),
                 choices: [
                     new Choice('resume', $('Continue from where you were')),
                     new Choice('restart', $('Restart from the beginning')),
@@ -250,7 +250,8 @@ go.app = function() {
             choices.push(new Choice('states:end', $('Exit')));
 
             return new MenuState(name, {
-                question: $('Welcome to the World Feed Program.'),
+                question: $('Welcome to the Home Grown School Feeding' +
+                            ' Program.'),
                 choices: choices
             });
         });
