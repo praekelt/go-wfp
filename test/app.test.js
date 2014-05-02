@@ -330,6 +330,27 @@ describe("app", function() {
             });
         });
 
+        describe.only("when a user is in a non-resumable state", function() {
+            describe("the __restart__ state should not be shown", function() {
+                _.forEach([
+                    {initial_state: 'states:start', final_state: 'states:start'},
+                    {initial_state: 'states:register:end', final_state: 'states:start'},
+                    {initial_state: 'states:report:end', final_state: 'states:start'},
+                    {initial_state: 'states:end', final_state: 'states:start'},
+                ], function (test) {
+                    it("when the state is " + test.initial_state, function() {
+                        return tester
+                            .setup.user.state(test.initial_state)
+                            .start()
+                            .check.interaction({
+                                state: test.final_state,
+                            })
+                            .run();
+                    });
+                });
+            });
+        });
+
         function number_answer_tests(min, max, is_float) {
             var float_in_range = (((min + max) / 2) + 0.1);
             var common = [

@@ -178,9 +178,13 @@ go.app = function() {
             return self.im.msg.session_event === 'new';
         };
 
+        self.is_resumable_state = function(name) {
+            return self.app.is_resumable_state(name);
+        };
+
         self._create_super = self.create;
         self.create = function(name, opts) {
-            if (self.is_new_session() && name != self.app.start_state_name) {
+            if (self.is_new_session() && self.is_resumable_state(name)) {
                 return self._create_super(
                     '__restart__', {
                         prev_state_name: name,
@@ -211,6 +215,15 @@ go.app = function() {
                 .then(function(contact) {
                     self.contact = contact;
                 });
+        };
+
+        self.is_resumable_state = function(name) {
+            return !_.any([
+                'states:start',
+                'states:register:end',
+                'states:report:end',
+                'states:end',
+            ], function(item) { return item === name; });
         };
 
         // Utilities
