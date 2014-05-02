@@ -5,7 +5,7 @@ module.exports = function() {
             "url": "http://example.com/commcare/api/",
             "params": {
                 "sender": "+27123456789",
-                "message": "set SCHOOL123 emisEMIS456 cer-o12.5 pul-o14 oil-o10",
+                "message": "set SCHOOL123 cer-o12.5 pul-o14 oil-o10",
             }
         },
         "response": {

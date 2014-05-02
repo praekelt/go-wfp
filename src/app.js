@@ -102,7 +102,6 @@ go.app = function() {
         self.set_opening_balances = function(user, seq_states) {
             var template = self.make_template([
                 ["set ", "school_id"],
-                ["emis", "emis"],
                 ["cer-o", "cereal:opening"],
                 ["pul-o", "pulses:opening"],
                 ["oil-o", "oil:opening"]
@@ -297,12 +296,6 @@ go.app = function() {
         self.add_reg_question('school_id', {
             state: FreeText,
             question: $('School ID:')
-        });
-
-        self.add_reg_question('emis', {
-            state: IntegerState,
-            question: $('EMIS:'),
-            check: function(i) {}
         });
 
         self.add_reg_goods_question('cereal:opening', {

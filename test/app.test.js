@@ -409,21 +409,6 @@ describe("app", function() {
                    states_helper.accept_answer("12345", "12345"));
             });
 
-            describe("when answering emis", function() {
-                beforeEach(function() {
-                    states_helper.init.state("emis");
-                });
-
-                it("should display state correctly",
-                   states_helper.display_correctly("EMIS:"));
-
-                it("should accept 12345 as an answer",
-                   states_helper.accept_answer("12345", "12345"));
-
-                it("should reject 123abc as an answer",
-                   states_helper.reject_answer("123abc"));
-            });
-
             describe("when answering cereal:opening", function() {
                 beforeEach(function() {
                     states_helper.init.state("cereal:opening");
@@ -480,7 +465,7 @@ describe("app", function() {
                         .check(function(api, im, app) {
                             assert.strictEqual(_.last(api.log.info), [
                                 "Dummy CommCareApi call: sender=+27123456789,",
-                                " message='set SCHOOL123 emisEMIS456",
+                                " message='set SCHOOL123",
                                 " cer-o12.5 pul-o14 oil-o10'",
                             ].join(""));
                         })
@@ -497,7 +482,7 @@ describe("app", function() {
                             assert.strictEqual(_.last(api.log.info), [
                                 "CommCareApi call:",
                                 " code=200, body=\"OK\", sender=+27123456789,",
-                                " message='set SCHOOL123 emisEMIS456",
+                                " message='set SCHOOL123",
                                 " cer-o12.5 pul-o14 oil-o10",
                                 "'",
                             ].join(""));
